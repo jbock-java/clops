@@ -1,2 +1,4 @@
+CXXFLAGS = -Og -Wall -std=c++11
+
 default:
-	clang++ src/main.cpp -o clops
+	$(CXX) $(CXXFLAGS) src/main.cpp -o clops

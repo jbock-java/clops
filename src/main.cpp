@@ -1,16 +1,18 @@
 #include <iostream>
-using std::cout;
-using std::cin;
-using std::endl;
+#include <vector>
+#include "parser.cpp"
 
 int main(int argc, const char* argv[]) {
-  cout << "Hello World!" << endl;
+  std::cout << "Hello World!" << std::endl;
   char c;
-  c = cin.peek();
-  cout << c << endl;
-  c = cin.get();
-  cout << c << endl;
-  c = cin.get();
-  cout << c << endl;
+  std::vector<int> v = {8, 4, 5, 9};
+  //std::vector<int> result = {1};
+  Parser::consume_whitespace(&std::cin);
+  c = std::cin.peek();
+  std::cout << c << std::endl;
+  c = std::cin.get();
+  std::cout << c << std::endl;
+  c = std::cin.get();
+  std::cout << c << std::endl;
   return 0;
 }
