@@ -1,13 +1,13 @@
 #include "ex.hpp"
 
-class NumEx: public Ex {
+class NumEx final: public Ex {
 
 public:
   const int value;
   NumEx(int value)
     : value(value)
   {}
-  Polynomial eval() {
+  Polynomial eval() override {
     return Polynomial(value);
   }
 };
