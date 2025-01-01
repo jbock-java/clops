@@ -7,8 +7,9 @@ int main(int argc, const char* argv[]) {
   std::cout << "Hello World!" << std::endl;
   char c;
   std::vector<int> v = {8, 4, 5, 9};
-  NumEx num(5);
-  std::cout << num.value << std::endl;
+  NumEx num(6);
+  Polynomial p = num.eval();
+  std::cout << p.value << std::endl;
   //std::vector<int> result = {1};
   Parser::consume_whitespace(&std::cin);
   c = std::cin.peek();

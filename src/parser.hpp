@@ -4,7 +4,7 @@
 
 class Parser {
 
-  public:
-    static void consume_whitespace(std::istream* in);
+public:
+  static void consume_whitespace(std::istream* in);
 };
 

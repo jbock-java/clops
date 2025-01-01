@@ -1,8 +1,13 @@
-class NumEx {
+#include "ex.hpp"
 
-  public:
-    int value;
-    NumEx(int val) {
-      value = val;
-    }
+class NumEx: public Ex {
+
+public:
+  const int value;
+  NumEx(int value)
+    : value(value)
+  {}
+  Polynomial eval() {
+    return Polynomial(value);
+  }
 };
