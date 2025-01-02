@@ -66,8 +66,7 @@ ListEx Parser::parse(std::istream* in) {
         break;
       }
       default:
-        std::string str = "VarExp? <";
-        throw std::runtime_error(str + c + '>');
+        throw std::runtime_error(std::string("VarExp? <") + c + '>');
     }
     consume_whitespace(in);
   }
