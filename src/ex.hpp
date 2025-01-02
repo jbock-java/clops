@@ -8,3 +8,5 @@ public:
   virtual Polynomial eval() = 0;
   virtual ~Ex() {}
 };
+
+class NumEx;
