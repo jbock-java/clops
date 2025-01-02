@@ -41,6 +41,7 @@ ListEx Parser::parse(std::istream* in) {
         in->get();
         ListEx ex = parse(in);
         result.add(ex);
+        break;
       }
       case ')': {
         in->get();
@@ -50,16 +51,19 @@ ListEx Parser::parse(std::istream* in) {
         in->get();
         PlusEx ex{};
         result.add(ex);
+        break;
       }
       case '-': {
         in->get();
         MinusEx ex{};
         result.add(ex);
+        break;
       }
       case '*': {
         in->get();
         MultEx ex{};
         result.add(ex);
+        break;
       }
       default:
         std::string str = "VarExp? <";
