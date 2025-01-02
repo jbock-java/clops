@@ -1,5 +1,5 @@
 # How to test
 
 ```sh
-make && ./clops <<< ab
+make && ./clops <<< '((3))'
 ```
