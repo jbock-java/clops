@@ -1,6 +1,6 @@
 #include <cctype>
 #include <stdexcept>
-#include <string.h>
+#include <string>
 
 #include "parser.hpp"
 #include "ex.hpp"
@@ -51,9 +51,8 @@ VarEx read_var_ex(std::istream& in) {
   return VarEx(name, 1);
 }
 
-ListEx Parser::parse(std::istream& in, bool is_nested) {
+void Parser::parse(ListEx& result, std::istream& in, bool is_nested) {
   Parser::consume_whitespace(in);
-  ListEx result{};
   char c;
   while (true) {
     c = in.peek();
@@ -75,17 +74,20 @@ ListEx Parser::parse(std::istream& in, bool is_nested) {
       continue;
     }
     switch (c) {
-      case '(':
+      case '(': {
         in.get();
-        result.addListEx(parse(in, true));
+        ListEx nested;
+        parse(nested, in, true);
+        result.addListEx(nested);
         break;
+      }
       case ')':
         in.get();
         if (!is_nested) {
           throw std::runtime_error("unmatched closing");
         }
         Parser::consume_whitespace(in);
-        return result;
+        return;
       case '+':
         in.get();
         result.addPlusEx();
@@ -106,14 +108,13 @@ ListEx Parser::parse(std::istream& in, bool is_nested) {
   if (is_nested) {
     throw std::runtime_error("unmatched opening");
   }
-  return result;
 }
 
-ListEx Parser::parse(std::istream& in) {
+void Parser::parse(ListEx& result, std::istream& in) {
   consume_whitespace(in);
   char c = in.peek();
   if (c == '(') {
     in.get();
   }
-  return parse(in, c == '(');
+  parse(result, in, c == '(');
 }

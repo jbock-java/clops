@@ -23,7 +23,7 @@ void ListEx::addMultEx() {
   value.push_back(std::make_shared<MultEx>(MultEx()));
 }
 
-void ListEx::addListEx(ListEx ex) {
+void ListEx::addListEx(ListEx& ex) {
   value.push_back(std::make_shared<ListEx>(ex));
 }
 

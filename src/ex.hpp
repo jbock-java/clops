@@ -56,10 +56,7 @@ public:
   void addPlusEx();
   void addMinusEx();
   void addMultEx();
-  void addListEx(ListEx ex);
-  ListEx() {
-    value.reserve(16);
-  }
+  void addListEx(ListEx& ex);
 private:
   std::vector<std::shared_ptr<Ex>> value;
 };

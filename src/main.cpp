@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <memory>
 
 #include "parser.cpp"
 #include "ex.cpp"
@@ -10,8 +11,9 @@ static void print_polynomial(Polynomial& p) {
 }
 
 int main(int argc, const char* argv[]) {
-  ListEx list = Parser::parse(std::cin);
-  Polynomial p = list.eval();
+  ListEx result;
+  Parser::parse(result, std::cin);
+  Polynomial p = result.eval();
   print_polynomial(p);
   return 0;
 }

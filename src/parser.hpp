@@ -7,8 +7,8 @@ class Parser {
 
 public:
   static void consume_whitespace(std::istream& in);
-  static ListEx parse(std::istream& in);
+  static void parse(ListEx& result, std::istream& in);
 private:
-  static ListEx parse(std::istream& in, bool is_nested);
+  static void parse(ListEx& result, std::istream& in, bool is_nested);
 };
 
