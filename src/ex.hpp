@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include <string>
 
 #include "polynomial.hpp"
 
@@ -23,10 +24,10 @@ public:
 
 class VarEx final: public Ex {
 public:
-  const char* var;
+  const std::string name;
   const int degree;
-  VarEx(char* var, int degree)
-    : var(var)
+  VarEx(std::string name, int degree)
+    : name(name)
     , degree(degree)
   {}
   Polynomial eval() override;
@@ -51,11 +52,11 @@ class ListEx final: public Ex {
 public:
   Polynomial eval() override;
   void addNumEx(int number);
-  void add(VarEx ex);
+  void addVarEx(VarEx ex);
   void addPlusEx();
   void addMinusEx();
   void addMultEx();
-  void add(ListEx ex);
+  void addListEx(ListEx ex);
   ListEx() {
     value.reserve(16);
   }

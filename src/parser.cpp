@@ -19,18 +19,36 @@ void Parser::consume_whitespace(std::istream* in) {
   }
 }
 
-int readNumber(std::istream* in) {
+int read_number(std::istream* in) {
   int result = in->get() - '0';
   char c;
   while (true) {
-    c = in->peek() - '0';
-    if (c < 0 || c > 9) {
+    c = in->peek();
+    if (!isdigit(c)) {
       break;
     }
     in->get();
-    result = 10 * result + c;
+    result = 10 * result + (c - '0');
   }
   return result;
+}
+
+VarEx read_var_ex(std::istream* in) {
+  std::string name{};
+  char c;
+  while (true) {
+    c = in->peek();
+    if (!isdigit(c) && !isalpha(c) && c != '_') {
+      break;
+    }
+    in->get();
+    name += c;
+  }
+  if (c == '^') {
+    in->get();
+    return VarEx(name, read_number(in));
+  }
+  return VarEx(name, 1);
 }
 
 ListEx Parser::parse(std::istream* in, bool is_nested) {
@@ -47,42 +65,41 @@ ListEx Parser::parse(std::istream* in, bool is_nested) {
       break;
     }
     if (std::isdigit(c)) {
-      result.addNumEx(readNumber(in));
+      result.addNumEx(read_number(in));
+      Parser::consume_whitespace(in);
+      continue;
+    }
+    if (c == '_' || std::isalpha(c)) {
+      result.addVarEx(read_var_ex(in));
       Parser::consume_whitespace(in);
       continue;
     }
     switch (c) {
-      case '(': {
+      case '(':
         in->get();
-        ListEx ex = parse(in, true);
-        result.add(ex);
+        result.addListEx(parse(in, true));
         break;
-      }
-      case ')': {
+      case ')':
         in->get();
         if (!is_nested) {
           throw std::runtime_error("unmatched closing");
         }
         Parser::consume_whitespace(in);
         return result;
-      }
-      case '+': {
+      case '+':
         in->get();
         result.addPlusEx();
         break;
-      }
-      case '-': {
+      case '-':
         in->get();
         result.addMinusEx();
         break;
-      }
-      case '*': {
+      case '*':
         in->get();
         result.addMultEx();
         break;
-      }
       default:
-        throw std::runtime_error(std::string("VarExp? <") + c + '>');
+        throw std::runtime_error(std::string("Unknown character: <") + c + '>');
     }
     Parser::consume_whitespace(in);
   }

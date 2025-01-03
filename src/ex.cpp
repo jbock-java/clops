@@ -7,7 +7,7 @@ void ListEx::addNumEx(int number) {
   value.push_back(std::make_shared<NumEx>(NumEx(number)));
 }
 
-void ListEx::add(VarEx ex) {
+void ListEx::addVarEx(VarEx ex) {
   value.push_back(std::make_shared<VarEx>(ex));
 }
 
@@ -23,7 +23,7 @@ void ListEx::addMultEx() {
   value.push_back(std::make_shared<MultEx>(MultEx()));
 }
 
-void ListEx::add(ListEx ex) {
+void ListEx::addListEx(ListEx ex) {
   value.push_back(std::make_shared<ListEx>(ex));
 }
 
@@ -47,9 +47,9 @@ Polynomial MultEx::eval() {
 }
 
 Polynomial VarEx::eval() {
-  return Polynomial(degree);
+  return Polynomial(name, degree);
 }
 
 Polynomial NumEx::eval() {
-  return Polynomial(value);
+  return Polynomial(std::string("x"), value);
 }
