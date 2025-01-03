@@ -25,26 +25,30 @@ NumEx readNumber(std::istream* in) {
   return result;
 }
 
-ListEx Parser::parse(std::istream* in) {
-  consume_whitespace(in);
+ListEx Parser::parse(std::istream* in, bool is_nested) {
+  Parser::consume_whitespace(in);
   ListEx result{};
   char c;
   while ((c = in->peek()) != -1) {
     if (std::isdigit(c)) {
       NumEx ex = readNumber(in);
       result.add(ex);
-      consume_whitespace(in);
+      Parser::consume_whitespace(in);
       continue;
     }
     switch (c) {
       case '(': {
         in->get();
-        ListEx ex = parse(in);
+        ListEx ex = parse(in, true);
         result.add(ex);
         break;
       }
       case ')': {
         in->get();
+        if (!is_nested) {
+          throw std::runtime_error("unmatched closing");
+        }
+        Parser::consume_whitespace(in);
         return result;
       }
       case '+': {
@@ -68,7 +72,19 @@ ListEx Parser::parse(std::istream* in) {
       default:
         throw std::runtime_error(std::string("VarExp? <") + c + '>');
     }
-    consume_whitespace(in);
+    Parser::consume_whitespace(in);
+  }
+  if (is_nested) {
+    throw std::runtime_error("unmatched opening");
   }
   return result;
+}
+
+ListEx Parser::parse(std::istream* in) {
+  consume_whitespace(in);
+  char c = in->peek();
+  if (c == '(') {
+    in->get();
+  }
+  return parse(in, c == '(');
 }
