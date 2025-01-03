@@ -19,9 +19,17 @@ void Parser::consume_whitespace(std::istream* in) {
   }
 }
 
-NumEx readNumber(std::istream* in) {
-  char c = in->get();
-  NumEx result(c - '0');
+int readNumber(std::istream* in) {
+  int result = in->get() - '0';
+  char c;
+  while (true) {
+    c = in->peek() - '0';
+    if (c < 0 || c > 9) {
+      break;
+    }
+    in->get();
+    result = 10 * result + c;
+  }
   return result;
 }
 
@@ -29,10 +37,17 @@ ListEx Parser::parse(std::istream* in, bool is_nested) {
   Parser::consume_whitespace(in);
   ListEx result{};
   char c;
-  while ((c = in->peek()) != -1) {
+  while (true) {
+    c = in->peek();
+    if (c == -1) {
+      break;
+    }
+    if (c == ';') {
+      in->get();
+      break;
+    }
     if (std::isdigit(c)) {
-      NumEx ex = readNumber(in);
-      result.add(ex);
+      result.addNumEx(readNumber(in));
       Parser::consume_whitespace(in);
       continue;
     }
@@ -53,20 +68,17 @@ ListEx Parser::parse(std::istream* in, bool is_nested) {
       }
       case '+': {
         in->get();
-        PlusEx ex{};
-        result.add(ex);
+        result.addPlusEx();
         break;
       }
       case '-': {
         in->get();
-        MinusEx ex{};
-        result.add(ex);
+        result.addMinusEx();
         break;
       }
       case '*': {
         in->get();
-        MultEx ex{};
-        result.add(ex);
+        result.addMultEx();
         break;
       }
       default:

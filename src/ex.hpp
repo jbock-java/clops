@@ -50,12 +50,15 @@ public:
 class ListEx final: public Ex {
 public:
   Polynomial eval() override;
-  void add(NumEx ex);
+  void addNumEx(int number);
   void add(VarEx ex);
-  void add(PlusEx ex);
-  void add(MinusEx ex);
-  void add(MultEx ex);
+  void addPlusEx();
+  void addMinusEx();
+  void addMultEx();
   void add(ListEx ex);
+  ListEx() {
+    value.reserve(16);
+  }
 private:
   std::vector<std::shared_ptr<Ex>> value;
 };

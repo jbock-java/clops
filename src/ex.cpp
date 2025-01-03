@@ -3,25 +3,24 @@
 #include <memory>
 #include "ex.hpp"
 
-
-void ListEx::add(NumEx ex) {
-  value.push_back(std::make_shared<NumEx>(ex));
+void ListEx::addNumEx(int number) {
+  value.push_back(std::make_shared<NumEx>(NumEx(number)));
 }
 
 void ListEx::add(VarEx ex) {
   value.push_back(std::make_shared<VarEx>(ex));
 }
 
-void ListEx::add(PlusEx ex) {
-  value.push_back(std::make_shared<PlusEx>(ex));
+void ListEx::addPlusEx() {
+  value.push_back(std::make_shared<PlusEx>(PlusEx()));
 }
 
-void ListEx::add(MinusEx ex) {
-  value.push_back(std::make_shared<MinusEx>(ex));
+void ListEx::addMinusEx() {
+  value.push_back(std::make_shared<MinusEx>(MinusEx()));
 }
 
-void ListEx::add(MultEx ex) {
-  value.push_back(std::make_shared<MultEx>(ex));
+void ListEx::addMultEx() {
+  value.push_back(std::make_shared<MultEx>(MultEx()));
 }
 
 void ListEx::add(ListEx ex) {
