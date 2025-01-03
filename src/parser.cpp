@@ -5,63 +5,63 @@
 #include "parser.hpp"
 #include "ex.hpp"
 
-void Parser::consume_whitespace(std::istream* in) {
+void Parser::consume_whitespace(std::istream& in) {
   char c;
-  while ((c = in->peek()) != -1) {
-    char c = in->peek();
+  while ((c = in.peek()) != -1) {
+    char c = in.peek();
     if (c == ' ') {
-      in->get();
+      in.get();
     } else if (c == '\n') {
-      in->get();
+      in.get();
     } else {
       break;
     }
   }
 }
 
-int read_number(std::istream* in) {
-  int result = in->get() - '0';
+int read_number(std::istream& in) {
+  int result = in.get() - '0';
   char c;
   while (true) {
-    c = in->peek();
+    c = in.peek();
     if (!isdigit(c)) {
       break;
     }
-    in->get();
+    in.get();
     result = 10 * result + (c - '0');
   }
   return result;
 }
 
-VarEx read_var_ex(std::istream* in) {
+VarEx read_var_ex(std::istream& in) {
   std::string name{};
   char c;
   while (true) {
-    c = in->peek();
+    c = in.peek();
     if (!isdigit(c) && !isalpha(c) && c != '_') {
       break;
     }
-    in->get();
+    in.get();
     name += c;
   }
   if (c == '^') {
-    in->get();
+    in.get();
     return VarEx(name, read_number(in));
   }
   return VarEx(name, 1);
 }
 
-ListEx Parser::parse(std::istream* in, bool is_nested) {
+ListEx Parser::parse(std::istream& in, bool is_nested) {
   Parser::consume_whitespace(in);
   ListEx result{};
   char c;
   while (true) {
-    c = in->peek();
+    c = in.peek();
     if (c == -1) {
       break;
     }
     if (c == ';') {
-      in->get();
+      in.get();
       break;
     }
     if (std::isdigit(c)) {
@@ -76,26 +76,26 @@ ListEx Parser::parse(std::istream* in, bool is_nested) {
     }
     switch (c) {
       case '(':
-        in->get();
+        in.get();
         result.addListEx(parse(in, true));
         break;
       case ')':
-        in->get();
+        in.get();
         if (!is_nested) {
           throw std::runtime_error("unmatched closing");
         }
         Parser::consume_whitespace(in);
         return result;
       case '+':
-        in->get();
+        in.get();
         result.addPlusEx();
         break;
       case '-':
-        in->get();
+        in.get();
         result.addMinusEx();
         break;
       case '*':
-        in->get();
+        in.get();
         result.addMultEx();
         break;
       default:
@@ -109,11 +109,11 @@ ListEx Parser::parse(std::istream* in, bool is_nested) {
   return result;
 }
 
-ListEx Parser::parse(std::istream* in) {
+ListEx Parser::parse(std::istream& in) {
   consume_whitespace(in);
-  char c = in->peek();
+  char c = in.peek();
   if (c == '(') {
-    in->get();
+    in.get();
   }
   return parse(in, c == '(');
 }
