@@ -47,7 +47,7 @@ std::unique_ptr<Polynomial> MultEx::eval() {
 }
 
 std::unique_ptr<Polynomial> VarEx::eval() {
-  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>();
+  std::unique_ptr<Poly> result = std::make_unique<Poly>();
   result->name = name;
   for (int i = 0; i < degree; i++) {
     result->coefficients.push_back(0);
@@ -57,7 +57,7 @@ std::unique_ptr<Polynomial> VarEx::eval() {
 }
 
 std::unique_ptr<Polynomial> NumEx::eval() {
-  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>();
+  std::unique_ptr<Poly> result = std::make_unique<Poly>();
   result->coefficients.push_back(1);
   return result;
 }

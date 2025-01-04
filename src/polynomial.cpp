@@ -2,7 +2,7 @@
 
 #include "polynomial.hpp"
 
-void Polynomial::print_polynomial() {
+void Poly::print_polynomial() {
   std::cout << name;
   for (int i = 0; i < coefficients.size(); i++) {
     std::cout << ' ' << coefficients[i];
