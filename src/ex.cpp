@@ -27,29 +27,37 @@ void ListEx::addListEx(ListEx& ex) {
   value.push_back(std::make_shared<ListEx>(ex));
 }
 
-Polynomial ListEx::eval() {
+std::unique_ptr<Polynomial> ListEx::eval() {
   if (value.size() == 1) {
     return value[0]->eval();
   }
   throw std::runtime_error("not implemented");
 }
 
-Polynomial PlusEx::eval() {
+std::unique_ptr<Polynomial> PlusEx::eval() {
   throw std::runtime_error("not implemented");
 }
 
-Polynomial MinusEx::eval() {
+std::unique_ptr<Polynomial> MinusEx::eval() {
   throw std::runtime_error("not implemented");
 }
 
-Polynomial MultEx::eval() {
+std::unique_ptr<Polynomial> MultEx::eval() {
   throw std::runtime_error("not implemented");
 }
 
-Polynomial VarEx::eval() {
-  return Polynomial(name, degree);
+std::unique_ptr<Polynomial> VarEx::eval() {
+  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>();
+  result->name = name;
+  for (int i = 0; i < degree; i++) {
+    result->coefficients.push_back(0);
+  }
+  result->coefficients.push_back(1);
+  return result;
 }
 
-Polynomial NumEx::eval() {
-  return Polynomial(std::string("x"), value);
+std::unique_ptr<Polynomial> NumEx::eval() {
+  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>();
+  result->coefficients.push_back(1);
+  return result;
 }

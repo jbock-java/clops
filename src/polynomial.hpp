@@ -1,13 +1,16 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 
 class Polynomial {
 public:
-  const std::string name;
-  const int value;
-  Polynomial(std::string name, int value)
-    : name(name)
-    , value(value)
-    {}
+  std::string name;
+  std::vector<int> coefficients;
+  void print_polynomial();
+  Polynomial()
+    : name(std::string("x"))
+  {
+    coefficients.reserve(16);
+  }
 };
