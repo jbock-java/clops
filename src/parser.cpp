@@ -5,7 +5,7 @@
 #include "parser.hpp"
 #include "ex.hpp"
 
-void Parser::consume_whitespace(std::istream& in) {
+void consume_whitespace(std::istream& in) {
   char c;
   while ((c = in.peek()) != -1) {
     char c = in.peek();
@@ -51,8 +51,8 @@ VarEx read_var_ex(std::istream& in) {
   return VarEx(name, 1);
 }
 
-void Parser::parse(ListEx& result, std::istream& in, bool is_nested) {
-  Parser::consume_whitespace(in);
+void parse_internal(ListEx& result, std::istream& in, bool is_nested) {
+  consume_whitespace(in);
   char c;
   while (true) {
     c = in.peek();
@@ -65,19 +65,19 @@ void Parser::parse(ListEx& result, std::istream& in, bool is_nested) {
     }
     if (std::isdigit(c)) {
       result.addNumEx(read_number(in));
-      Parser::consume_whitespace(in);
+      consume_whitespace(in);
       continue;
     }
     if (c == '_' || std::isalpha(c)) {
       result.addVarEx(read_var_ex(in));
-      Parser::consume_whitespace(in);
+      consume_whitespace(in);
       continue;
     }
     switch (c) {
       case '(': {
         in.get();
         ListEx nested;
-        parse(nested, in, true);
+        parse_internal(nested, in, true);
         result.addListEx(nested);
         break;
       }
@@ -86,7 +86,7 @@ void Parser::parse(ListEx& result, std::istream& in, bool is_nested) {
         if (!is_nested) {
           throw std::runtime_error("unmatched closing");
         }
-        Parser::consume_whitespace(in);
+        consume_whitespace(in);
         return;
       case '+':
         in.get();
@@ -103,7 +103,7 @@ void Parser::parse(ListEx& result, std::istream& in, bool is_nested) {
       default:
         throw std::runtime_error(std::string("Unknown character: <") + c + '>');
     }
-    Parser::consume_whitespace(in);
+    consume_whitespace(in);
   }
   if (is_nested) {
     throw std::runtime_error("unmatched opening");
@@ -116,5 +116,5 @@ void Parser::parse(ListEx& result, std::istream& in) {
   if (c == '(') {
     in.get();
   }
-  parse(result, in, c == '(');
+  parse_internal(result, in, c == '(');
 }
