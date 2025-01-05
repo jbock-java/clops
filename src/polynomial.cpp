@@ -8,3 +8,11 @@ void Poly::print_polynomial(char x) {
     std::cout << ' ' << coefficients[i];
   }
 }
+
+void Vary::print_polynomial(char x) {
+  std::cout << x << '^' << degree;
+}
+
+void Consty::print_polynomial(char x) {
+  std::cout << coefficient;
+}
