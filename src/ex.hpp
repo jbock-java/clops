@@ -24,11 +24,9 @@ public:
 
 class VarEx final: public Ex {
 public:
-  const std::string name;
   const int degree;
-  VarEx(std::string name, int degree)
-    : name(name)
-    , degree(degree)
+  VarEx(int degree)
+    : degree(degree)
   {}
   std::unique_ptr<Polynomial> eval() override;
 };

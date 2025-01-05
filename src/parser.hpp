@@ -7,6 +7,6 @@
 class Parser {
 
 public:
-  static void parse(ListEx& result, std::istream& in);
+  static void parse(char x, ListEx& result, std::istream& in);
 };
 

@@ -46,9 +46,9 @@ VarEx read_var_ex(std::istream& in) {
   }
   if (c == '^') {
     in.get();
-    return VarEx(name, read_number(in));
+    return VarEx(read_number(in));
   }
-  return VarEx(name, 1);
+  return VarEx(1);
 }
 
 void parse_internal(ListEx& result, std::istream& in, bool is_nested) {
@@ -68,7 +68,7 @@ void parse_internal(ListEx& result, std::istream& in, bool is_nested) {
       consume_whitespace(in);
       continue;
     }
-    if (c == '_' || std::isalpha(c)) {
+    if (std::isalpha(c)) {
       result.addVarEx(read_var_ex(in));
       consume_whitespace(in);
       continue;
@@ -110,7 +110,7 @@ void parse_internal(ListEx& result, std::istream& in, bool is_nested) {
   }
 }
 
-void Parser::parse(ListEx& result, std::istream& in) {
+void Parser::parse(char x, ListEx& result, std::istream& in) {
   consume_whitespace(in);
   char c = in.peek();
   if (c == '(') {
