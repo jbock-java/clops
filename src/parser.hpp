@@ -5,6 +5,6 @@
 
 namespace Parser {
 
-  void parse(char x, ListToken& result, std::istream& in);
+  std::shared_ptr<ListToken> parse(char x, std::istream& in);
 }
 

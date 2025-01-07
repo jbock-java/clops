@@ -21,7 +21,6 @@ EXAMPLES:
 )""";
 
 int main(int argc, char** argv) {
-  ListToken result;
   std::string x = "x";
   int c;
   while ((c = getopt(argc, argv, "x:h")) != -1) {
@@ -41,8 +40,8 @@ int main(int argc, char** argv) {
         return 1;
     }
   }
-  Parser::parse(x.at(0), result, std::cin);
-  std::unique_ptr<Polynomial> p = result.eval();
+  std::shared_ptr<ListToken> result = Parser::parse(x.at(0), std::cin);
+  std::unique_ptr<Polynomial> p = result->eval();
   p->print_polynomial(x.at(0));
   std::cout << '\n';
   return 0;
