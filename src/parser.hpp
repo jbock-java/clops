@@ -1,12 +1,10 @@
 #pragma once
 
 #include <iostream>
-#include <memory>
-#include "ex.hpp"
+#include "token.hpp"
 
-class Parser {
+namespace Parser {
 
-public:
-  static void parse(char x, ListEx& result, std::istream& in);
-};
+  void parse(char x, ListToken& result, std::istream& in);
+}
 

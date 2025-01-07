@@ -6,58 +6,58 @@
 
 #include "polynomial.hpp"
 
-class Ex {
+class Token {
 
 public:
   virtual std::unique_ptr<Polynomial> eval() = 0;
-  virtual ~Ex() {}
+  virtual ~Token() {}
 };
 
-class NumEx final: public Ex {
+class NumToken final: public Token {
 public:
   const int value;
-  NumEx(int value)
+  NumToken(int value)
     : value(value)
   {}
   std::unique_ptr<Polynomial> eval() override;
 };
 
-class VarEx final: public Ex {
+class VarToken final: public Token {
 public:
   const int degree;
-  VarEx(int degree)
+  VarToken(int degree)
     : degree(degree)
   {}
   std::unique_ptr<Polynomial> eval() override;
 };
 
-class PlusEx final: public Ex {
+class PlusToken final: public Token {
 public:
   std::unique_ptr<Polynomial> eval() override;
 };
 
-class MinusEx final: public Ex {
+class MinusToken final: public Token {
 public:
   std::unique_ptr<Polynomial> eval() override;
 };
 
-class MultEx final: public Ex {
+class MultToken final: public Token {
 public:
   std::unique_ptr<Polynomial> eval() override;
 };
 
-class ListEx final: public Ex {
+class ListToken final: public Token {
 public:
   std::unique_ptr<Polynomial> eval() override;
-  void addNumEx(int number);
-  void addVarEx(VarEx ex);
-  void addPlusEx();
-  void addMinusEx();
-  void addMultEx();
-  void addListEx(ListEx& ex);
-  ListEx() {
+  void addNumToken(int number);
+  void addVarToken(VarToken ex);
+  void addPlusToken();
+  void addMinusToken();
+  void addMultToken();
+  void addListToken(ListToken& ex);
+  ListToken() {
     value.reserve(16);
   }
 private:
-  std::vector<std::shared_ptr<Ex>> value;
+  std::vector<std::shared_ptr<Token>> value;
 };

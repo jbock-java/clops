@@ -3,7 +3,7 @@
 #include <string>
 
 #include "parser.hpp"
-#include "ex.hpp"
+#include "token.hpp"
 
 void consume_whitespace(std::istream& in) {
   char c;
@@ -33,7 +33,7 @@ int read_number(std::istream& in) {
   return result;
 }
 
-VarEx read_var_ex(char x, std::istream& in) {
+VarToken read_var_token(char x, std::istream& in) {
   char c = in.get();
   if (c != x) {
     throw std::runtime_error(std::string("unknown char: ") + c);
@@ -44,12 +44,12 @@ VarEx read_var_ex(char x, std::istream& in) {
     if (!isdigit(in.peek())) {
       throw std::runtime_error(std::string("expecting number after ^ but found ") + c);
     }
-    return VarEx(read_number(in));
+    return VarToken(read_number(in));
   }
-  return VarEx(1);
+  return VarToken(1);
 }
 
-void parse_internal(char x, ListEx& result, std::istream& in, bool is_nested) {
+void parse_internal(char x, ListToken& result, std::istream& in, bool is_nested) {
   consume_whitespace(in);
   char c;
   while (true) {
@@ -62,21 +62,21 @@ void parse_internal(char x, ListEx& result, std::istream& in, bool is_nested) {
       break;
     }
     if (std::isdigit(c)) {
-      result.addNumEx(read_number(in));
+      result.addNumToken(read_number(in));
       consume_whitespace(in);
       continue;
     }
     if (std::isalpha(c)) {
-      result.addVarEx(read_var_ex(x, in));
+      result.addVarToken(read_var_token(x, in));
       consume_whitespace(in);
       continue;
     }
     switch (c) {
       case '(': {
         in.get();
-        ListEx nested;
+        ListToken nested;
         parse_internal(x, nested, in, true);
-        result.addListEx(nested);
+        result.addListToken(nested);
         break;
       }
       case ')':
@@ -88,15 +88,15 @@ void parse_internal(char x, ListEx& result, std::istream& in, bool is_nested) {
         return;
       case '+':
         in.get();
-        result.addPlusEx();
+        result.addPlusToken();
         break;
       case '-':
         in.get();
-        result.addMinusEx();
+        result.addMinusToken();
         break;
       case '*':
         in.get();
-        result.addMultEx();
+        result.addMultToken();
         break;
       default:
         throw std::runtime_error(std::string("Unknown character: <") + c + '>');
@@ -108,7 +108,7 @@ void parse_internal(char x, ListEx& result, std::istream& in, bool is_nested) {
   }
 }
 
-void Parser::parse(char x, ListEx& result, std::istream& in) {
+void Parser::parse(char x, ListToken& result, std::istream& in) {
   consume_whitespace(in);
   char c = in.peek();
   if (c == '(') {

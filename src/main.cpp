@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 #include "parser.cpp"
-#include "ex.cpp"
+#include "token.cpp"
 #include "polynomial.cpp"
 
 static const char* USAGE = R"""(Usage: clops [OPTIONS]
@@ -21,7 +21,7 @@ EXAMPLES:
 )""";
 
 int main(int argc, char** argv) {
-  ListEx result;
+  ListToken result;
   std::string x = "x";
   int c;
   while ((c = getopt(argc, argv, "x:h")) != -1) {
