@@ -5,6 +5,7 @@
 #include <string>
 
 #include "polynomial.hpp"
+#include "ex.hpp"
 
 class Token {
 
@@ -49,6 +50,7 @@ public:
 class ListToken final: public Token {
 public:
   std::unique_ptr<Polynomial> eval() override;
+  std::unique_ptr<HeadEx> transform();
   ListToken(std::vector<std::shared_ptr<Token>> value)
     : value(value)
   {}

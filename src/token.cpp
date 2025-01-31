@@ -1,12 +1,17 @@
 #include <stdexcept>
 #include <vector>
 #include <memory>
+
 #include "token.hpp"
 
 std::unique_ptr<Polynomial> ListToken::eval() {
   if (value.size() == 1) {
     return value[0]->eval();
   }
+  throw std::runtime_error("not implemented");
+}
+
+std::unique_ptr<HeadEx> ListToken::transform() {
   throw std::runtime_error("not implemented");
 }
 

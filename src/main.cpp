@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "parser.cpp"
+#include "ex.cpp"
 #include "token.cpp"
 #include "polynomial.cpp"
 
@@ -21,16 +22,18 @@ EXAMPLES:
 )""";
 
 int main(int argc, char** argv) {
-  std::string x = "x";
+  char x = 'x';
   int c;
   while ((c = getopt(argc, argv, "x:h")) != -1) {
+    std::string soptarg;
     switch (c) {
       case 'x':
-        x = optarg;
-        if (x.empty() || x.size() >= 2) {
+        soptarg = optarg;
+        if (soptarg.empty() || soptarg.size() >= 2) {
           std::cout << "Option -x: Expecting single character argument\n";
           return 0;
         }
+        x = soptarg.at(0);
         break;
       case 'h':
         std::cout << USAGE;
@@ -40,9 +43,10 @@ int main(int argc, char** argv) {
         return 1;
     }
   }
-  std::shared_ptr<ListToken> result = Parser::parse(x.at(0), std::cin);
-  std::unique_ptr<Polynomial> p = result->eval();
-  p->print_polynomial(x.at(0));
+  std::shared_ptr<ListToken> result = Parser::parse(x, std::cin);
+  std::unique_ptr<HeadEx> transformed = result->transform();
+  std::unique_ptr<Polynomial> p = transformed->eval();
+  p->print_polynomial(x);
   std::cout << '\n';
   return 0;
 }
