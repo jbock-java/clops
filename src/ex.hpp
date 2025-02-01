@@ -31,10 +31,17 @@ public:
   std::unique_ptr<Polynomial> eval() override;
 };
 
+enum Symbol {
+  PLUS,
+  MULT,
+};
+
 class HeadEx final: public Ex {
 public:
+  const Symbol head;
   std::unique_ptr<Polynomial> eval() override;
-  HeadEx(int capacity) {
+  HeadEx(Symbol head, int capacity)
+    : head(head) {
     value.reserve(capacity);
   }
 private:
