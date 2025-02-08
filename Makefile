@@ -5,3 +5,8 @@ default:
 
 release:
 	$(CXX) $(CXXFLAGS) src/main.cpp -o clops -O2 -DNDEBUG
+
+tags:
+	ctags --recurse=yes --exclude=.git
+
+.PHONY: tags

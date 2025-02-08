@@ -11,6 +11,7 @@ class Token {
 
 public:
   virtual std::unique_ptr<Polynomial> eval() = 0;
+  virtual std::unique_ptr<Ex> transform() = 0;
   virtual ~Token() {}
 };
 
@@ -21,6 +22,7 @@ public:
     : value(value)
   {}
   std::unique_ptr<Polynomial> eval() override;
+  std::unique_ptr<Ex> transform() override;
 };
 
 class VarToken final: public Token {
@@ -30,27 +32,31 @@ public:
     : degree(degree)
   {}
   std::unique_ptr<Polynomial> eval() override;
+  std::unique_ptr<Ex> transform() override;
 };
 
 class PlusToken final: public Token {
 public:
   std::unique_ptr<Polynomial> eval() override;
+  std::unique_ptr<Ex> transform() override;
 };
 
 class MinusToken final: public Token {
 public:
   std::unique_ptr<Polynomial> eval() override;
+  std::unique_ptr<Ex> transform() override;
 };
 
 class MultToken final: public Token {
 public:
   std::unique_ptr<Polynomial> eval() override;
+  std::unique_ptr<Ex> transform() override;
 };
 
 class ListToken final: public Token {
 public:
   std::unique_ptr<Polynomial> eval() override;
-  std::unique_ptr<HeadEx> transform();
+  std::unique_ptr<Ex> transform() override;
   ListToken(std::vector<std::shared_ptr<Token>> value)
     : value(value)
   {}
