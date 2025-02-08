@@ -31,7 +31,7 @@ public:
   std::unique_ptr<Polynomial> eval() override;
 };
 
-enum Symbol {
+enum class Symbol {
   PLUS,
   MULT,
 };

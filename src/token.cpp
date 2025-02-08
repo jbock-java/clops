@@ -19,7 +19,20 @@ std::unique_ptr<Ex> ListToken::transform() {
   if (value.size() == 1) {
     return value[0]->transform();
   }
+  HeadEx exprsCopy(Symbol::PLUS, value.size());
+  HeadEx region(Symbol::MULT, value.size());
+  std::vector<int> bound(value.size());
+  for (int i = 0; i < value.size() - 1; i++) {
+    std::shared_ptr<Token> left = value[i];
+    std::shared_ptr<Token> right = value[i + 1];
+  }
   throw std::runtime_error("ListToken transform, not implemented");
+}
+
+bool is_strong(
+  std::shared_ptr<Token> left,
+  std::shared_ptr<Token> right) {
+    throw std::runtime_error("is_strong, not implemented");
 }
 
 std::unique_ptr<Polynomial> PlusToken::eval() {
