@@ -15,6 +15,17 @@ std::unique_ptr<Polynomial> ListToken::eval() {
   throw std::runtime_error("not implemented");
 }
 
+bool isStrong(
+  std::shared_ptr<Token> left,
+  std::shared_ptr<Token> right) {
+  Strength l = left->leftStrength();
+  if (l != Strength::UNDECIDED) {
+    return l == Strength::WEAK ? false : true;
+  }
+  Strength r = right->rightStrength();
+  return r == Strength::WEAK ? false : true;
+}
+
 std::unique_ptr<Ex> ListToken::transform() {
   if (value.size() == 1) {
     return value[0]->transform();
@@ -25,14 +36,17 @@ std::unique_ptr<Ex> ListToken::transform() {
   for (int i = 0; i < value.size() - 1; i++) {
     std::shared_ptr<Token> left = value[i];
     std::shared_ptr<Token> right = value[i + 1];
+    if (isStrong(left, right)) {
+      bound[i] |= B_STRONG;
+      bound[i + 1] |= B_STRONG;
+      if (left->isMinus()) {
+        bound[i + 1] |= B_MINUSBOUND;
+      }
+    } else if ((bound[i] & B_STRONG) != 0) {
+      bound[i] |= B_END;
+    }
   }
   throw std::runtime_error("ListToken transform, not implemented");
-}
-
-bool is_strong(
-  std::shared_ptr<Token> left,
-  std::shared_ptr<Token> right) {
-    throw std::runtime_error("is_strong, not implemented");
 }
 
 std::unique_ptr<Polynomial> PlusToken::eval() {
@@ -75,4 +89,76 @@ std::unique_ptr<Polynomial> NumToken::eval() {
 std::unique_ptr<Ex> NumToken::transform() {
   NumEx result(value);
   return std::make_unique<NumEx>(result);
+}
+
+Strength ListToken::leftStrength() {
+  return Strength::UNDECIDED;
+}
+
+Strength ListToken::rightStrength() {
+  return Strength::UNDECIDED;
+}
+
+Strength PlusToken::leftStrength() {
+  return Strength::WEAK;
+}
+
+Strength PlusToken::rightStrength() {
+  return Strength::WEAK;
+}
+
+Strength MinusToken::leftStrength() {
+  return Strength::STRONG;
+}
+
+Strength MinusToken::rightStrength() {
+  return Strength::WEAK;
+}
+
+Strength MultToken::leftStrength() {
+  return Strength::STRONG;
+}
+
+Strength MultToken::rightStrength() {
+  return Strength::STRONG;
+}
+
+Strength VarToken::leftStrength() {
+  return Strength::UNDECIDED;
+}
+
+Strength VarToken::rightStrength() {
+  return Strength::UNDECIDED;
+}
+
+Strength NumToken::leftStrength() {
+  return Strength::UNDECIDED;
+}
+
+Strength NumToken::rightStrength() {
+  return Strength::UNDECIDED;
+}
+
+bool ListToken::isMinus() {
+  return false;
+}
+
+bool PlusToken::isMinus() {
+  return false;
+}
+
+bool MinusToken::isMinus() {
+  return true;
+}
+
+bool MultToken::isMinus() {
+  return false;
+}
+
+bool VarToken::isMinus() {
+  return false;
+}
+
+bool NumToken::isMinus() {
+  return false;
 }
