@@ -26,7 +26,7 @@ bool isStrong(
   return r == Strength::WEAK ? false : true;
 }
 
-std::unique_ptr<Ex> ListToken::transform() {
+std::shared_ptr<Ex> ListToken::transform() {
   if (value.size() == 1) {
     return value[0]->transform();
   }
@@ -46,14 +46,32 @@ std::unique_ptr<Ex> ListToken::transform() {
       bound[i] |= B_END;
     }
   }
+  for (int i = 0; i < value.size(); i++) {
+    std::shared_ptr<Token> token = value[i];
+    int b = bound[i];
+    std::shared_ptr<Ex> transformed = token->transform();
+    if ((b & B_STRONG) != 0) {
+      if ((b & B_MINUSBOUND) != 0) {
+      } else {
+        region.value.push_back(transformed);
+      }
+    }
+  }
   throw std::runtime_error("ListToken transform, not implemented");
+}
+
+std::shared_ptr<Ex> unwrap(HeadEx expr) {
+  if (expr.value.size() == 1) {
+    return expr.value[0];
+  }
+  return std::make_shared<HeadEx>(expr);
 }
 
 std::unique_ptr<Polynomial> PlusToken::eval() {
   throw std::runtime_error("not implemented");
 }
 
-std::unique_ptr<Ex> PlusToken::transform() {
+std::shared_ptr<Ex> PlusToken::transform() {
   throw std::runtime_error("PlusToken transform not implemented");
 }
 
@@ -61,7 +79,7 @@ std::unique_ptr<Polynomial> MinusToken::eval() {
   throw std::runtime_error("not implemented");
 }
 
-std::unique_ptr<Ex> MinusToken::transform() {
+std::shared_ptr<Ex> MinusToken::transform() {
   throw std::runtime_error("MinusToken transform not implemented");
 }
 
@@ -69,7 +87,7 @@ std::unique_ptr<Polynomial> MultToken::eval() {
   throw std::runtime_error("not implemented");
 }
 
-std::unique_ptr<Ex> MultToken::transform() {
+std::shared_ptr<Ex> MultToken::transform() {
   throw std::runtime_error("MultToken transform not implemented");
 }
 
@@ -77,7 +95,7 @@ std::unique_ptr<Polynomial> VarToken::eval() {
   return std::make_unique<Vary>(degree);
 }
 
-std::unique_ptr<Ex> VarToken::transform() {
+std::shared_ptr<Ex> VarToken::transform() {
   VarEx result(degree);
   return std::make_unique<VarEx>(result);
 }
@@ -86,7 +104,7 @@ std::unique_ptr<Polynomial> NumToken::eval() {
   return std::make_unique<Consty>(value);
 }
 
-std::unique_ptr<Ex> NumToken::transform() {
+std::shared_ptr<Ex> NumToken::transform() {
   NumEx result(value);
   return std::make_unique<NumEx>(result);
 }

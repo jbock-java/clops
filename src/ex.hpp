@@ -44,6 +44,5 @@ public:
     : head(head) {
     value.reserve(capacity);
   }
-private:
   std::vector<std::shared_ptr<Ex>> value;
 };
