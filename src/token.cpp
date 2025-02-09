@@ -26,6 +26,13 @@ bool isStrong(
   return r == Strength::WEAK ? false : true;
 }
 
+std::shared_ptr<Ex> unwrap(HeadEx expr) {
+  if (expr.value.size() == 1) {
+    return expr.value[0];
+  }
+  return std::make_shared<HeadEx>(expr);
+}
+
 std::shared_ptr<Ex> ListToken::transform() {
   if (value.size() == 1) {
     return value[0]->transform();
@@ -52,19 +59,30 @@ std::shared_ptr<Ex> ListToken::transform() {
     std::shared_ptr<Ex> transformed = token->transform();
     if ((b & B_STRONG) != 0) {
       if ((b & B_MINUSBOUND) != 0) {
+        HeadEx neg(Symbol::MULT, 2);
+        VarEx minusOne(-1);
+        neg.value.push_back(std::make_shared<VarEx>(minusOne));
+        neg.value.push_back(transformed);
+        region.value.push_back(std::make_shared<HeadEx>(neg));
       } else {
         region.value.push_back(transformed);
       }
+      if ((b & B_END) != 0) {
+        HeadEx regionCopy = region;
+        std::shared_ptr<Ex> unwrapped = unwrap(regionCopy);
+        exprsCopy.value.push_back(unwrapped);
+      }
+    } else {
+      region.value.push_back(transformed);
     }
   }
-  throw std::runtime_error("ListToken transform, not implemented");
-}
-
-std::shared_ptr<Ex> unwrap(HeadEx expr) {
-  if (expr.value.size() == 1) {
-    return expr.value[0];
+  if (exprsCopy.value.empty()) {
+    return unwrap(region);
   }
-  return std::make_shared<HeadEx>(expr);
+  if (!region.value.empty()) {
+    exprsCopy.value.push_back(unwrap(region));
+  }
+  return std::make_shared<HeadEx>(exprsCopy);
 }
 
 std::unique_ptr<Polynomial> PlusToken::eval() {
