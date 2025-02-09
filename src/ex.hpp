@@ -11,6 +11,7 @@ class Ex {
 public:
   virtual bool isNil() = 0;
   virtual std::unique_ptr<Polynomial> eval() = 0;
+  virtual std::string toString() = 0;
   virtual ~Ex() {}
 };
 
@@ -21,6 +22,7 @@ public:
     : value(value)
   {}
   std::unique_ptr<Polynomial> eval() override;
+  std::string toString() override;
   bool isNil() override;
 };
 
@@ -31,6 +33,7 @@ public:
     : degree(degree)
   {}
   std::unique_ptr<Polynomial> eval() override;
+  std::string toString() override;
   bool isNil() override;
 };
 
@@ -43,6 +46,7 @@ class NilEx final: public Ex {
 public:
   NilEx() {}
   std::unique_ptr<Polynomial> eval() override;
+  std::string toString() override;
   bool isNil() override;
 };
 
@@ -58,5 +62,6 @@ public:
   std::unique_ptr<Polynomial> evalMult();
   void add(std::shared_ptr<Ex> ex);
   std::unique_ptr<Polynomial> eval() override;
+  std::string toString() override;
   bool isNil() override;
 };

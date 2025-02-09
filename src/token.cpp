@@ -73,7 +73,7 @@ std::shared_ptr<Ex> ListToken::transform() {
         exprsCopy.add(unwrapped);
       }
     } else {
-      region.add(transformed);
+      exprsCopy.add(transformed);
     }
   }
   if (exprsCopy.value.empty()) {

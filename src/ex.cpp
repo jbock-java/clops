@@ -1,5 +1,6 @@
 #include <vector>
 #include <memory>
+#include <sstream>
 
 #include "ex.hpp"
 
@@ -56,4 +57,37 @@ bool NumEx::isNil() {
 
 bool NilEx::isNil() {
   return true;
+}
+
+std::string symbolToString(Symbol symbol) {
+  switch (symbol) {
+    case Symbol::PLUS: return "+";
+    case Symbol::MULT: return "*";
+  }
+}
+
+std::string HeadEx::toString() {
+  if (value.empty()) {
+    return "(" + symbolToString(head) + ")";
+  }
+  std::stringstream sb;
+  for (int i = 0; i < value.size(); i++) {
+    if (i != 0) {
+      sb << " ";
+    }
+    sb << value[i]->toString();
+  }
+  return "(" + symbolToString(head) + " " + sb.str() + ")";
+}
+
+std::string VarEx::toString() {
+  return "x^" + std::to_string(degree);
+}
+
+std::string NumEx::toString() {
+  return std::to_string(value);
+}
+
+std::string NilEx::toString() {
+  return "NIL";
 }
