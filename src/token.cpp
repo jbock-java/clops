@@ -61,26 +61,26 @@ std::shared_ptr<Ex> ListToken::transform() {
       if ((b & B_MINUSBOUND) != 0) {
         HeadEx neg(Symbol::MULT, 2);
         VarEx minusOne(-1);
-        neg.value.push_back(std::make_shared<VarEx>(minusOne));
-        neg.value.push_back(transformed);
-        region.value.push_back(std::make_shared<HeadEx>(neg));
+        neg.add(std::make_shared<VarEx>(minusOne));
+        neg.add(transformed);
+        region.add(std::make_shared<HeadEx>(neg));
       } else {
-        region.value.push_back(transformed);
+        region.add(transformed);
       }
       if ((b & B_END) != 0) {
         HeadEx regionCopy = region;
         std::shared_ptr<Ex> unwrapped = unwrap(regionCopy);
-        exprsCopy.value.push_back(unwrapped);
+        exprsCopy.add(unwrapped);
       }
     } else {
-      region.value.push_back(transformed);
+      region.add(transformed);
     }
   }
   if (exprsCopy.value.empty()) {
     return unwrap(region);
   }
   if (!region.value.empty()) {
-    exprsCopy.value.push_back(unwrap(region));
+    exprsCopy.add(unwrap(region));
   }
   return std::make_shared<HeadEx>(exprsCopy);
 }
@@ -90,7 +90,8 @@ std::unique_ptr<Polynomial> PlusToken::eval() {
 }
 
 std::shared_ptr<Ex> PlusToken::transform() {
-  throw std::runtime_error("PlusToken transform not implemented");
+  NilEx result;
+  return std::make_shared<NilEx>(result);
 }
 
 std::unique_ptr<Polynomial> MinusToken::eval() {
@@ -98,7 +99,8 @@ std::unique_ptr<Polynomial> MinusToken::eval() {
 }
 
 std::shared_ptr<Ex> MinusToken::transform() {
-  throw std::runtime_error("MinusToken transform not implemented");
+  NilEx result;
+  return std::make_shared<NilEx>(result);
 }
 
 std::unique_ptr<Polynomial> MultToken::eval() {
@@ -106,7 +108,8 @@ std::unique_ptr<Polynomial> MultToken::eval() {
 }
 
 std::shared_ptr<Ex> MultToken::transform() {
-  throw std::runtime_error("MultToken transform not implemented");
+  NilEx result;
+  return std::make_shared<NilEx>(result);
 }
 
 std::unique_ptr<Polynomial> VarToken::eval() {

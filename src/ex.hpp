@@ -9,6 +9,7 @@
 class Ex {
 
 public:
+  virtual bool isNil() = 0;
   virtual std::unique_ptr<Polynomial> eval() = 0;
   virtual ~Ex() {}
 };
@@ -20,6 +21,7 @@ public:
     : value(value)
   {}
   std::unique_ptr<Polynomial> eval() override;
+  bool isNil() override;
 };
 
 class VarEx final: public Ex {
@@ -29,6 +31,7 @@ public:
     : degree(degree)
   {}
   std::unique_ptr<Polynomial> eval() override;
+  bool isNil() override;
 };
 
 enum class Symbol {
@@ -36,13 +39,24 @@ enum class Symbol {
   MULT,
 };
 
+class NilEx final: public Ex {
+public:
+  NilEx() {}
+  std::unique_ptr<Polynomial> eval() override;
+  bool isNil() override;
+};
+
 class HeadEx final: public Ex {
 public:
   const Symbol head;
-  std::unique_ptr<Polynomial> eval() override;
+  std::vector<std::shared_ptr<Ex>> value;
   HeadEx(Symbol head, int capacity)
     : head(head) {
     value.reserve(capacity);
   }
-  std::vector<std::shared_ptr<Ex>> value;
+  std::unique_ptr<Polynomial> evalPlus();
+  std::unique_ptr<Polynomial> evalMult();
+  void add(std::shared_ptr<Ex> ex);
+  std::unique_ptr<Polynomial> eval() override;
+  bool isNil() override;
 };
