@@ -47,7 +47,6 @@ int main(int argc, char** argv) {
   std::shared_ptr<Ex> transformed = result->transform();
   //std::cout << transformed->toString() << '\n';
   std::unique_ptr<Polynomial> p = transformed->eval();
-  p->print_polynomial(x);
-  std::cout << '\n';
+  std::cout << p->toString(x) << '\n';
   return 0;
 }

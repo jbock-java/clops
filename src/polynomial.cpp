@@ -1,18 +1,38 @@
 #include <iostream>
+#include <sstream>
 
 #include "polynomial.hpp"
 
-void Poly::print_polynomial(char x) {
-  std::cout << x;
+std::string Polynomial::toString(char x) {
+  std::stringstream sb;
   for (size_t i = 0; i < coefficients.size(); i++) {
-    std::cout << ' ' << coefficients[i];
+    if (i != 0) {
+      sb << ' ';
+    }
+    sb << std::to_string(coefficients[i]);
   }
+  return sb.str();
 }
 
-void Vary::print_polynomial(char x) {
-  std::cout << x << '^' << degree;
+int Polynomial::getCoefficient(size_t i) {
+  if (i >= coefficients.size()) {
+    return 0;
+  }
+  return coefficients[i];
 }
 
-void Consty::print_polynomial(char x) {
-  std::cout << coefficient;
+size_t Polynomial::getDegree() {
+  if (coefficients.empty()) {
+    return 0;
+  }
+  return coefficients.size();
+}
+
+void Polynomial::add(std::unique_ptr<Polynomial> other) {
+  size_t newDegree = std::max(getDegree(), other->getDegree());
+  std::vector copy = coefficients;
+  coefficients.clear();
+  for (size_t i = 0; i <= newDegree; i++) {
+    coefficients.push_back(getCoefficient(i) + other->getCoefficient(i));
+  }
 }

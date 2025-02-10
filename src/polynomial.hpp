@@ -5,35 +5,12 @@
 
 class Polynomial {
 public:
-  virtual void print_polynomial(char x) = 0;
-  virtual ~Polynomial() {}
-};
-
-class Poly final : public Polynomial {
-public:
   std::vector<int> coefficients;
-  void print_polynomial(char x) override;
-  Poly() {
-    coefficients.reserve(16);
+  std::string toString(char x);
+  int getCoefficient(size_t i);
+  size_t getDegree();
+  void add(std::unique_ptr<Polynomial> other);
+  Polynomial(size_t degree) {
+    coefficients.reserve(degree + 1);
   }
-};
-
-class Vary final : public Polynomial {
-private:
-  const int degree;
-public:
-  void print_polynomial(char x) override;
-  Vary(int degree)
-    : degree(degree)
-  {}
-};
-
-class Consty final : public Polynomial {
-private:
-  const int coefficient;
-public:
-  void print_polynomial(char x) override;
-  Consty(int coefficient)
-    : coefficient(coefficient)
-  {}
 };

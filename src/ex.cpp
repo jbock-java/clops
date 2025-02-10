@@ -5,7 +5,11 @@
 #include "ex.hpp"
 
 std::unique_ptr<Polynomial> HeadEx::evalPlus() {
-  throw std::runtime_error("plus not implemented");
+  Polynomial result(16);
+  for (size_t i = 0; i < value.size(); i++) {
+    result.add(value[i]->eval());
+  }
+  return std::make_unique<Polynomial>(result);
 }
 
 std::unique_ptr<Polynomial> HeadEx::evalMult() {
@@ -30,13 +34,15 @@ void HeadEx::add(std::shared_ptr<Ex> ex) {
 }
 
 std::unique_ptr<Polynomial> VarEx::eval() {
-  Vary result(degree);
-  return std::make_unique<Vary>(result);
+  Polynomial result(degree);
+  result.coefficients[degree] = 1;
+  return std::make_unique<Polynomial>(result);
 }
 
 std::unique_ptr<Polynomial> NumEx::eval() {
-  Consty result(value);
-  return std::make_unique<Consty>(result);
+  Polynomial result(0);
+  result.coefficients[0] = value;
+  return std::make_unique<Polynomial>(result);
 }
 
 std::unique_ptr<Polynomial> NilEx::eval() {

@@ -8,13 +8,6 @@ static const int B_STRONG = 4;
 static const int B_MINUSBOUND = 16;
 static const int B_END = 1;
 
-std::unique_ptr<Polynomial> ListToken::eval() {
-  if (value.size() == 1) {
-    return value[0]->eval();
-  }
-  throw std::runtime_error("not implemented");
-}
-
 bool isStrong(
   std::shared_ptr<Token> left,
   std::shared_ptr<Token> right) {
@@ -85,17 +78,9 @@ std::shared_ptr<Ex> ListToken::transform() {
   return std::make_shared<HeadEx>(exprsCopy);
 }
 
-std::unique_ptr<Polynomial> PlusToken::eval() {
-  throw std::runtime_error("not implemented");
-}
-
 std::shared_ptr<Ex> PlusToken::transform() {
   NilEx result;
   return std::make_shared<NilEx>(result);
-}
-
-std::unique_ptr<Polynomial> MinusToken::eval() {
-  throw std::runtime_error("not implemented");
 }
 
 std::shared_ptr<Ex> MinusToken::transform() {
@@ -103,26 +88,14 @@ std::shared_ptr<Ex> MinusToken::transform() {
   return std::make_shared<NilEx>(result);
 }
 
-std::unique_ptr<Polynomial> MultToken::eval() {
-  throw std::runtime_error("not implemented");
-}
-
 std::shared_ptr<Ex> MultToken::transform() {
   NilEx result;
   return std::make_shared<NilEx>(result);
 }
 
-std::unique_ptr<Polynomial> VarToken::eval() {
-  return std::make_unique<Vary>(degree);
-}
-
 std::shared_ptr<Ex> VarToken::transform() {
   VarEx result(degree);
   return std::make_unique<VarEx>(result);
-}
-
-std::unique_ptr<Polynomial> NumToken::eval() {
-  return std::make_unique<Consty>(value);
 }
 
 std::shared_ptr<Ex> NumToken::transform() {
