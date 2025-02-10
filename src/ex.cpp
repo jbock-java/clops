@@ -64,6 +64,7 @@ std::string symbolToString(Symbol symbol) {
     case Symbol::PLUS: return "+";
     case Symbol::MULT: return "*";
   }
+  return "UNKNOWN_SYMBOL";
 }
 
 std::string HeadEx::toString() {
@@ -71,7 +72,7 @@ std::string HeadEx::toString() {
     return "(" + symbolToString(head) + ")";
   }
   std::stringstream sb;
-  for (int i = 0; i < value.size(); i++) {
+  for (size_t i = 0; i < value.size(); i++) {
     if (i != 0) {
       sb << " ";
     }
