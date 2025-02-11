@@ -7,7 +7,8 @@
 std::unique_ptr<Polynomial> HeadEx::evalPlus() {
   Polynomial result(16);
   for (size_t i = 0; i < value.size(); i++) {
-    result.add(value[i]->eval());
+    std::unique_ptr<Polynomial> p = value[i]->eval();
+    result.add(std::move(p));
   }
   return std::make_unique<Polynomial>(result);
 }
@@ -35,13 +36,16 @@ void HeadEx::add(std::shared_ptr<Ex> ex) {
 
 std::unique_ptr<Polynomial> VarEx::eval() {
   Polynomial result(degree);
-  result.coefficients[degree] = 1;
+  for (size_t i = 0; i < degree; i++) {
+    result.coefficients.push_back(0);
+  }
+  result.coefficients.push_back(1);
   return std::make_unique<Polynomial>(result);
 }
 
 std::unique_ptr<Polynomial> NumEx::eval() {
   Polynomial result(0);
-  result.coefficients[0] = value;
+  result.coefficients.push_back(value);
   return std::make_unique<Polynomial>(result);
 }
 

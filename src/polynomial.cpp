@@ -29,10 +29,11 @@ size_t Polynomial::getDegree() {
 }
 
 void Polynomial::add(std::unique_ptr<Polynomial> other) {
-  size_t newDegree = std::max(getDegree(), other->getDegree());
-  std::vector copy = coefficients;
-  coefficients.clear();
-  for (size_t i = 0; i <= newDegree; i++) {
-    coefficients.push_back(getCoefficient(i) + other->getCoefficient(i));
+  std::vector<int> copy = coefficients;
+  for (size_t i = 0; i < coefficients.size(); i++) {
+    coefficients[i] = copy[i] + other->getCoefficient(i);
+  }
+  for (size_t i = coefficients.size(); i < other->coefficients.size(); i++) {
+    coefficients.emplace_back(other->coefficients[i]);
   }
 }
