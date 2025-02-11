@@ -53,8 +53,8 @@ std::shared_ptr<Ex> ListToken::transform() {
     if ((b & B_STRONG) != 0) {
       if ((b & B_MINUSBOUND) != 0) {
         HeadEx neg(Symbol::MULT, 2);
-        VarEx minusOne(-1);
-        neg.add(std::make_shared<VarEx>(minusOne));
+        NumEx minusOne(-1);
+        neg.add(std::make_shared<NumEx>(minusOne));
         neg.add(transformed);
         region.add(std::make_shared<HeadEx>(neg));
       } else {
