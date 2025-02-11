@@ -5,12 +5,13 @@
 #include "ex.hpp"
 
 std::unique_ptr<Polynomial> HeadEx::evalPlus() {
-  Polynomial result(16);
+  Polynomial zero(16);
+  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(zero);
   for (size_t i = 0; i < value.size(); i++) {
     std::unique_ptr<Polynomial> p = value[i]->eval();
-    result.add(std::move(p));
+    result = result->add(std::move(p));
   }
-  return std::make_unique<Polynomial>(result);
+  return result;
 }
 
 std::unique_ptr<Polynomial> HeadEx::evalMult() {

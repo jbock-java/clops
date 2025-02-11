@@ -36,12 +36,13 @@ size_t Polynomial::getDegree() {
   return coefficients.size();
 }
 
-void Polynomial::add(std::unique_ptr<Polynomial> other) {
-  std::vector<int> copy = coefficients;
+std::unique_ptr<Polynomial> Polynomial::add(std::unique_ptr<Polynomial> other) {
+  Polynomial result(std::max(getDegree(), other->getDegree()));
   for (size_t i = 0; i < coefficients.size(); i++) {
-    coefficients[i] = copy[i] + other->getCoefficient(i);
+    result.coefficients.push_back(coefficients[i] + other->getCoefficient(i));
   }
   for (size_t i = coefficients.size(); i < other->coefficients.size(); i++) {
-    coefficients.emplace_back(other->coefficients[i]);
+    result.coefficients.push_back(other->getCoefficient(i));
   }
+  return std::make_unique<Polynomial>(result);
 }
