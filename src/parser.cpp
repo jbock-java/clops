@@ -49,7 +49,7 @@ int read_var(char x, std::istream& in) {
   return 1;
 }
 
-std::shared_ptr<ListToken> parse_internal(char x, std::istream& in, bool is_nested) {
+std::shared_ptr<ListToken> parse_internal(char x, std::istream& in) {
   std::vector<std::shared_ptr<Token>> result;
   result.reserve(16);
   consume_whitespace(in);
@@ -76,15 +76,12 @@ std::shared_ptr<ListToken> parse_internal(char x, std::istream& in, bool is_nest
     switch (c) {
       case '(': {
         in.get();
-        std::shared_ptr<ListToken> nested = parse_internal(x, in, true);
+        std::shared_ptr<ListToken> nested = parse_internal(x, in);
         result.push_back(nested);
         break;
       }
       case ')':
         in.get();
-        if (!is_nested) {
-          throw std::runtime_error("unmatched closing");
-        }
         consume_whitespace(in);
         return std::make_shared<ListToken>(ListToken(result));
       case '+':
@@ -104,17 +101,11 @@ std::shared_ptr<ListToken> parse_internal(char x, std::istream& in, bool is_nest
     }
     consume_whitespace(in);
   }
-  if (is_nested) {
-    throw std::runtime_error("unmatched opening");
-  }
   return std::make_shared<ListToken>(ListToken(result));
 }
 
 std::shared_ptr<ListToken> Parser::parse(char x, std::istream& in) {
   consume_whitespace(in);
-  char c = in.peek();
-  if (c == '(') {
-    in.get();
-  }
-  return parse_internal(x, in, c == '(');
+  std::shared_ptr<ListToken> result = parse_internal(x, in);
+  return result;
 }

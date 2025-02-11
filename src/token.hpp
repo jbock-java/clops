@@ -71,6 +71,7 @@ public:
 
 class ListToken final: public Token {
 public:
+  std::vector<std::shared_ptr<Token>> value;
   std::shared_ptr<Ex> transform() override;
   Strength leftStrength() override;
   Strength rightStrength() override;
@@ -78,6 +79,4 @@ public:
   ListToken(std::vector<std::shared_ptr<Token>> value)
     : value(value)
   {}
-private:
-  std::vector<std::shared_ptr<Token>> value;
 };
