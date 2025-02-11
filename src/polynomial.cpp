@@ -7,9 +7,17 @@ std::string Polynomial::toString(char x) {
   std::stringstream sb;
   for (size_t i = 0; i < coefficients.size(); i++) {
     if (i != 0) {
-      sb << ' ';
+      sb << " + ";
     }
-    sb << std::to_string(coefficients[i]);
+    if (i == 0 || coefficients[i] != 1) {
+      sb << std::to_string(coefficients[i]);
+    }
+    if (i != 0) {
+      sb << x;
+    }
+    if (i != 0 && i != 1) {
+      sb << '^' << std::to_string(i);
+    }
   }
   return sb.str();
 }
