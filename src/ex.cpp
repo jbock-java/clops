@@ -15,7 +15,14 @@ std::unique_ptr<Polynomial> HeadEx::evalPlus() {
 }
 
 std::unique_ptr<Polynomial> HeadEx::evalMult() {
-  throw std::runtime_error("mult not implemented");
+  Polynomial one(16);
+  one.coefficients.push_back(1);
+  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(one);
+  for (size_t i = 0; i < value.size(); i++) {
+    std::unique_ptr<Polynomial> p = value[i]->eval();
+    result = result->mult(std::move(p));
+  }
+  return result;
 }
 
 std::unique_ptr<Polynomial> HeadEx::eval() {

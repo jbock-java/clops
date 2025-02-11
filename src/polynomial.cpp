@@ -46,3 +46,26 @@ std::unique_ptr<Polynomial> Polynomial::add(std::unique_ptr<Polynomial> other) {
   }
   return std::make_unique<Polynomial>(result);
 }
+
+std::unique_ptr<Polynomial> Polynomial::monoMult(int coefficient, size_t degree) {
+  Polynomial result(degree + getDegree());
+  for (size_t i = 0; i < degree; i++) {
+    result.coefficients.push_back(0);
+  }
+  for (size_t i = 0; i < getDegree(); i++) {
+    result.coefficients.push_back(coefficient * coefficients[i]);
+  }
+  return std::make_unique<Polynomial>(result);
+}
+
+std::unique_ptr<Polynomial> Polynomial::mult(std::unique_ptr<Polynomial> other) {
+  Polynomial zero(getDegree() + other->getDegree());
+  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(zero);
+  for (size_t i = 0; i < other->coefficients.size(); i++) {
+    std::unique_ptr<Polynomial> p = monoMult(other->coefficients[i], i);
+    result = result->add(std::move(p));
+  }
+//  std::cout << "polynomial.cpp mult (" << toString('x') << ") (" << other->toString('x') << ") => ";
+//  std::cout << result->toString('x') << '\n';
+  return result;
+}

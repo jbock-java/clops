@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
   }
   std::shared_ptr<ListToken> result = Parser::parse(x, std::cin);
   std::shared_ptr<Ex> transformed = result->transform();
-  //std::cout << transformed->toString() << '\n';
+//  std::cout << "main.cpp transformed: " << transformed->toString() << '\n';
   std::unique_ptr<Polynomial> p = transformed->eval();
   std::cout << p->toString(x) << '\n';
   return 0;
