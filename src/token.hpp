@@ -71,12 +71,12 @@ public:
 
 class ListToken final: public Token {
 public:
-  std::vector<std::shared_ptr<Token>> value;
+  std::vector<std::unique_ptr<Token>> value;
   std::shared_ptr<Ex> transform() override;
   Strength leftStrength() override;
   Strength rightStrength() override;
   bool isMinus() override;
-  ListToken(std::vector<std::shared_ptr<Token>> value)
-    : value(value)
-  {}
+  ListToken(size_t capacity) {
+    value.reserve(capacity);
+  }
 };

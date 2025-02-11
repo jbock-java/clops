@@ -9,14 +9,12 @@ static const int B_MINUSBOUND = 16;
 static const int B_END = 1;
 
 bool isStrong(
-  std::shared_ptr<Token> left,
-  std::shared_ptr<Token> right) {
-  Strength l = left->leftStrength();
-  if (l != Strength::UNDECIDED) {
-    return l == Strength::WEAK ? false : true;
+  Strength leftStrength,
+  Strength rightStrength) {
+  if (leftStrength != Strength::UNDECIDED) {
+    return leftStrength == Strength::WEAK ? false : true;
   }
-  Strength r = right->rightStrength();
-  return r == Strength::WEAK ? false : true;
+  return rightStrength == Strength::WEAK ? false : true;
 }
 
 std::shared_ptr<Ex> unwrap(HeadEx expr) {
@@ -34,12 +32,10 @@ std::shared_ptr<Ex> ListToken::transform() {
   HeadEx region(Symbol::MULT, value.size());
   std::vector<int> bound(value.size());
   for (size_t i = 0; i < value.size() - 1; i++) {
-    std::shared_ptr<Token> left = value[i];
-    std::shared_ptr<Token> right = value[i + 1];
-    if (isStrong(left, right)) {
+    if (isStrong(value[i]->leftStrength(), value[i + 1]->rightStrength())) {
       bound[i] |= B_STRONG;
       bound[i + 1] |= B_STRONG;
-      if (left->isMinus()) {
+      if (value[i]->isMinus()) {
         bound[i + 1] |= B_MINUSBOUND;
       }
     } else if ((bound[i] & B_STRONG) != 0) {
@@ -47,7 +43,7 @@ std::shared_ptr<Ex> ListToken::transform() {
     }
   }
   for (size_t i = 0; i < value.size(); i++) {
-    std::shared_ptr<Token> token = value[i];
+    std::unique_ptr<Token> token = std::move(value[i]);
     int b = bound[i];
     std::shared_ptr<Ex> transformed = token->transform();
     if ((b & B_STRONG) != 0) {

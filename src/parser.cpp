@@ -49,9 +49,8 @@ int read_var(char x, std::istream& in) {
   return 1;
 }
 
-std::shared_ptr<ListToken> parse_internal(char x, std::istream& in) {
-  std::vector<std::shared_ptr<Token>> result;
-  result.reserve(16);
+std::unique_ptr<ListToken> parse_internal(char x, std::istream& in) {
+  std::unique_ptr<ListToken> result = std::make_unique<ListToken>(16);
   consume_whitespace(in);
   char c;
   while (true) {
@@ -64,48 +63,46 @@ std::shared_ptr<ListToken> parse_internal(char x, std::istream& in) {
       break;
     }
     if (std::isdigit(c)) {
-      result.emplace_back(std::make_shared<NumToken>(read_num(in)));
+      result->value.emplace_back(std::make_unique<NumToken>(read_num(in)));
       consume_whitespace(in);
       continue;
     }
     if (std::isalpha(c)) {
-      result.emplace_back(std::make_shared<VarToken>(read_var(x, in)));
+      result->value.emplace_back(std::make_unique<VarToken>(read_var(x, in)));
       consume_whitespace(in);
       continue;
     }
     switch (c) {
       case '(': {
         in.get();
-        std::shared_ptr<ListToken> nested = parse_internal(x, in);
-        result.push_back(nested);
+        result->value.push_back(parse_internal(x, in));
         break;
       }
       case ')':
         in.get();
         consume_whitespace(in);
-        return std::make_shared<ListToken>(ListToken(result));
+        return result;
       case '+':
         in.get();
-        result.emplace_back(std::make_shared<PlusToken>());
+        result->value.emplace_back(std::make_unique<PlusToken>());
         break;
       case '-':
         in.get();
-        result.emplace_back(std::make_shared<MinusToken>());
+        result->value.emplace_back(std::make_unique<MinusToken>());
         break;
       case '*':
         in.get();
-        result.emplace_back(std::make_shared<MultToken>());
+        result->value.emplace_back(std::make_unique<MultToken>());
         break;
       default:
         throw std::runtime_error(std::string("Unknown character: <") + c + '>');
     }
     consume_whitespace(in);
   }
-  return std::make_shared<ListToken>(ListToken(result));
+  return result;
 }
 
-std::shared_ptr<ListToken> Parser::parse(char x, std::istream& in) {
+std::unique_ptr<ListToken> Parser::parse(char x, std::istream& in) {
   consume_whitespace(in);
-  std::shared_ptr<ListToken> result = parse_internal(x, in);
-  return result;
+  return parse_internal(x, in);
 }

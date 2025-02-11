@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
         return 1;
     }
   }
-  std::shared_ptr<ListToken> result = Parser::parse(x, std::cin);
+  std::unique_ptr<ListToken> result = Parser::parse(x, std::cin);
 //  std::cout << "main.cpp parseResult: " << result->value.size() << '\n';
   std::shared_ptr<Ex> transformed = result->transform();
 //  std::cout << "main.cpp transformed: " << transformed->toString() << '\n';
