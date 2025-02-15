@@ -28,8 +28,10 @@ std::unique_ptr<Ex> ListToken::transform() {
   if (value.size() == 1) {
     return value[0]->transform();
   }
-  std::unique_ptr<HeadEx> exprsCopy = std::make_unique<HeadEx>(Symbol::PLUS, value.size());
-  std::unique_ptr<HeadEx> region = std::make_unique<HeadEx>(Symbol::MULT, value.size());
+  std::unique_ptr<HeadEx> exprsCopy = std::make_unique<HeadEx>(value.size());
+  std::unique_ptr<HeadEx> region = std::make_unique<HeadEx>(value.size());
+  exprsCopy->head = Symbol::PLUS;
+  region->head = Symbol::MULT;
   std::vector<int> bound(value.size());
   for (size_t i = 0; i < value.size() - 1; i++) {
     if (isStrong(value[i]->leftStrength(), value[i + 1]->rightStrength())) {
@@ -37,6 +39,8 @@ std::unique_ptr<Ex> ListToken::transform() {
       bound[i + 1] |= B_STRONG;
       if (value[i]->isMinus()) {
         bound[i + 1] |= B_MINUSBOUND;
+      } else if (value[i]->isDiv()) {
+        region->head = Symbol::DIV;
       }
     } else if ((bound[i] & B_STRONG) != 0) {
       bound[i] |= B_END;
@@ -47,7 +51,8 @@ std::unique_ptr<Ex> ListToken::transform() {
     int b = bound[i];
     if ((b & B_STRONG) != 0) {
       if ((b & B_MINUSBOUND) != 0) {
-        std::unique_ptr<HeadEx> neg = std::make_unique<HeadEx>(Symbol::MULT, 2);
+        std::unique_ptr<HeadEx> neg = std::make_unique<HeadEx>(2);
+        neg->head = Symbol::MULT;
         neg->add(std::make_unique<NumEx>(-1));
         neg->add(token->transform());
         region->add(std::move(neg));
@@ -56,7 +61,8 @@ std::unique_ptr<Ex> ListToken::transform() {
       }
       if ((b & B_END) != 0) {
         exprsCopy->add(unwrap(std::move(region)));
-        region = std::make_unique<HeadEx>(Symbol::MULT, value.size());
+        region = std::make_unique<HeadEx>(value.size());
+        region->head = Symbol::MULT;
       }
     } else {
       exprsCopy->add(token->transform());
@@ -72,28 +78,27 @@ std::unique_ptr<Ex> ListToken::transform() {
 }
 
 std::unique_ptr<Ex> PlusToken::transform() {
-  NilEx result;
-  return std::make_unique<NilEx>(result);
+  return std::make_unique<NilEx>();
 }
 
 std::unique_ptr<Ex> MinusToken::transform() {
-  NilEx result;
-  return std::make_unique<NilEx>(result);
+  return std::make_unique<NilEx>();
 }
 
 std::unique_ptr<Ex> MultToken::transform() {
-  NilEx result;
-  return std::make_unique<NilEx>(result);
+  return std::make_unique<NilEx>();
+}
+
+std::unique_ptr<Ex> DivToken::transform() {
+  return std::make_unique<NilEx>();
 }
 
 std::unique_ptr<Ex> VarToken::transform() {
-  VarEx result(degree);
-  return std::make_unique<VarEx>(result);
+  return std::make_unique<VarEx>(degree);
 }
 
 std::unique_ptr<Ex> NumToken::transform() {
-  NumEx result(value);
-  return std::make_unique<NumEx>(result);
+  return std::make_unique<NumEx>(value);
 }
 
 Strength ListToken::leftStrength() {
@@ -125,6 +130,14 @@ Strength MultToken::leftStrength() {
 }
 
 Strength MultToken::rightStrength() {
+  return Strength::STRONG;
+}
+
+Strength DivToken::leftStrength() {
+  return Strength::STRONG;
+}
+
+Strength DivToken::rightStrength() {
   return Strength::STRONG;
 }
 
@@ -160,10 +173,42 @@ bool MultToken::isMinus() {
   return false;
 }
 
+bool DivToken::isMinus() {
+  return false;
+}
+
 bool VarToken::isMinus() {
   return false;
 }
 
 bool NumToken::isMinus() {
   return false;
+}
+
+bool VarToken::isDiv() {
+  return false;
+}
+
+bool NumToken::isDiv() {
+  return false;
+}
+
+bool ListToken::isDiv() {
+  return false;
+}
+
+bool PlusToken::isDiv() {
+  return false;
+}
+
+bool MinusToken::isDiv() {
+  return false;
+}
+
+bool MultToken::isDiv() {
+  return false;
+}
+
+bool DivToken::isDiv() {
+  return true;
 }

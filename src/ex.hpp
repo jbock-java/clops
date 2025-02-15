@@ -40,6 +40,7 @@ public:
 enum class Symbol {
   PLUS,
   MULT,
+  DIV,
 };
 
 class NilEx final: public Ex {
@@ -52,14 +53,15 @@ public:
 
 class HeadEx final: public Ex {
 public:
-  const Symbol head;
+  Symbol head;
   std::vector<std::unique_ptr<Ex>> value;
-  HeadEx(Symbol head, size_t capacity)
-    : head(head) {
+  HeadEx(size_t capacity) {
     value.reserve(capacity);
+    head = Symbol::PLUS;
   }
   std::unique_ptr<Polynomial> evalPlus();
   std::unique_ptr<Polynomial> evalMult();
+  std::unique_ptr<Polynomial> evalDiv();
   void add(std::unique_ptr<Ex> ex);
   std::unique_ptr<Polynomial> eval() override;
   std::string toString() override;

@@ -25,12 +25,15 @@ std::unique_ptr<Polynomial> HeadEx::evalMult() {
   return result;
 }
 
+std::unique_ptr<Polynomial> HeadEx::evalDiv() {
+  throw std::runtime_error(toString() + ": div not implemented");
+}
+
 std::unique_ptr<Polynomial> HeadEx::eval() {
-  if (head == Symbol::PLUS) {
-    return evalPlus();
-  }
-  if (head == Symbol::MULT) {
-    return evalMult();
+  switch (head) {
+    case Symbol::PLUS: return evalPlus();
+    case Symbol::MULT: return evalMult();
+    case Symbol::DIV: return evalDiv();
   }
   throw std::runtime_error("unknown symbol");
 }
@@ -81,6 +84,7 @@ std::string symbolToString(Symbol symbol) {
   switch (symbol) {
     case Symbol::PLUS: return "+";
     case Symbol::MULT: return "*";
+    case Symbol::DIV: return "/";
   }
   return "UNKNOWN_SYMBOL";
 }

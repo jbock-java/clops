@@ -94,6 +94,10 @@ std::unique_ptr<ListToken> parse_internal(char x, std::istream& in) {
         in.get();
         result->value.emplace_back(std::make_unique<MultToken>());
         break;
+      case '/':
+        in.get();
+        result->value.emplace_back(std::make_unique<DivToken>());
+        break;
       default:
         throw std::runtime_error(std::string("Unknown character: <") + c + '>');
     }
