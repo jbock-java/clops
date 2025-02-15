@@ -14,7 +14,7 @@ enum class Strength {
 class Token {
 
 public:
-  virtual std::shared_ptr<Ex> transform() = 0;
+  virtual std::unique_ptr<Ex> transform() = 0;
   virtual Strength leftStrength() = 0;
   virtual Strength rightStrength() = 0;
   virtual bool isMinus() = 0;
@@ -27,7 +27,7 @@ public:
   NumToken(int value)
     : value(value)
   {}
-  std::shared_ptr<Ex> transform() override;
+  std::unique_ptr<Ex> transform() override;
   Strength leftStrength() override;
   Strength rightStrength() override;
   bool isMinus() override;
@@ -39,7 +39,7 @@ public:
   VarToken(int degree)
     : degree(degree)
   {}
-  std::shared_ptr<Ex> transform() override;
+  std::unique_ptr<Ex> transform() override;
   Strength leftStrength() override;
   Strength rightStrength() override;
   bool isMinus() override;
@@ -47,7 +47,7 @@ public:
 
 class PlusToken final: public Token {
 public:
-  std::shared_ptr<Ex> transform() override;
+  std::unique_ptr<Ex> transform() override;
   Strength leftStrength() override;
   Strength rightStrength() override;
   bool isMinus() override;
@@ -55,7 +55,7 @@ public:
 
 class MinusToken final: public Token {
 public:
-  std::shared_ptr<Ex> transform() override;
+  std::unique_ptr<Ex> transform() override;
   Strength leftStrength() override;
   Strength rightStrength() override;
   bool isMinus() override;
@@ -63,7 +63,7 @@ public:
 
 class MultToken final: public Token {
 public:
-  std::shared_ptr<Ex> transform() override;
+  std::unique_ptr<Ex> transform() override;
   Strength leftStrength() override;
   Strength rightStrength() override;
   bool isMinus() override;
@@ -72,7 +72,7 @@ public:
 class ListToken final: public Token {
 public:
   std::vector<std::unique_ptr<Token>> value;
-  std::shared_ptr<Ex> transform() override;
+  std::unique_ptr<Ex> transform() override;
   Strength leftStrength() override;
   Strength rightStrength() override;
   bool isMinus() override;

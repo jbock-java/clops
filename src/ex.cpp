@@ -35,11 +35,11 @@ std::unique_ptr<Polynomial> HeadEx::eval() {
   throw std::runtime_error("unknown symbol");
 }
 
-void HeadEx::add(std::shared_ptr<Ex> ex) {
+void HeadEx::add(std::unique_ptr<Ex> ex) {
   if (ex->isNil()) {
     return;
   }
-  value.push_back(ex);
+  value.push_back(std::move(ex));
 }
 
 std::unique_ptr<Polynomial> VarEx::eval() {

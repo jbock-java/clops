@@ -17,19 +17,19 @@ bool isStrong(
   return rightStrength == Strength::WEAK ? false : true;
 }
 
-std::shared_ptr<Ex> unwrap(HeadEx expr) {
-  if (expr.value.size() == 1) {
-    return expr.value[0];
+std::unique_ptr<Ex> unwrap(std::unique_ptr<HeadEx> expr) {
+  if (expr->value.size() == 1) {
+    return std::move(expr->value[0]);
   }
-  return std::make_shared<HeadEx>(expr);
+  return expr;
 }
 
-std::shared_ptr<Ex> ListToken::transform() {
+std::unique_ptr<Ex> ListToken::transform() {
   if (value.size() == 1) {
     return value[0]->transform();
   }
-  HeadEx exprsCopy(Symbol::PLUS, value.size());
-  HeadEx region(Symbol::MULT, value.size());
+  std::unique_ptr<HeadEx> exprsCopy = std::make_unique<HeadEx>(Symbol::PLUS, value.size());
+  std::unique_ptr<HeadEx> region = std::make_unique<HeadEx>(Symbol::MULT, value.size());
   std::vector<int> bound(value.size());
   for (size_t i = 0; i < value.size() - 1; i++) {
     if (isStrong(value[i]->leftStrength(), value[i + 1]->rightStrength())) {
@@ -45,56 +45,53 @@ std::shared_ptr<Ex> ListToken::transform() {
   for (size_t i = 0; i < value.size(); i++) {
     std::unique_ptr<Token> token = std::move(value[i]);
     int b = bound[i];
-    std::shared_ptr<Ex> transformed = token->transform();
     if ((b & B_STRONG) != 0) {
       if ((b & B_MINUSBOUND) != 0) {
-        HeadEx neg(Symbol::MULT, 2);
-        NumEx minusOne(-1);
-        neg.add(std::make_shared<NumEx>(minusOne));
-        neg.add(transformed);
-        region.add(std::make_shared<HeadEx>(neg));
+        std::unique_ptr<HeadEx> neg = std::make_unique<HeadEx>(Symbol::MULT, 2);
+        neg->add(std::make_unique<NumEx>(-1));
+        neg->add(token->transform());
+        region->add(std::move(neg));
       } else {
-        region.add(transformed);
+        region->add(token->transform());
       }
       if ((b & B_END) != 0) {
-        HeadEx regionCopy = region;
-        std::shared_ptr<Ex> unwrapped = unwrap(regionCopy);
-        exprsCopy.add(unwrapped);
+        exprsCopy->add(unwrap(std::move(region)));
+        region = std::make_unique<HeadEx>(Symbol::MULT, value.size());
       }
     } else {
-      exprsCopy.add(transformed);
+      exprsCopy->add(token->transform());
     }
   }
-  if (exprsCopy.value.empty()) {
-    return unwrap(region);
+  if (exprsCopy->value.empty()) {
+    return unwrap(std::move(region));
   }
-  if (!region.value.empty()) {
-    exprsCopy.add(unwrap(region));
+  if (!region->value.empty()) {
+    exprsCopy->add(unwrap(std::move(region)));
   }
-  return std::make_shared<HeadEx>(exprsCopy);
+  return exprsCopy;
 }
 
-std::shared_ptr<Ex> PlusToken::transform() {
+std::unique_ptr<Ex> PlusToken::transform() {
   NilEx result;
-  return std::make_shared<NilEx>(result);
+  return std::make_unique<NilEx>(result);
 }
 
-std::shared_ptr<Ex> MinusToken::transform() {
+std::unique_ptr<Ex> MinusToken::transform() {
   NilEx result;
-  return std::make_shared<NilEx>(result);
+  return std::make_unique<NilEx>(result);
 }
 
-std::shared_ptr<Ex> MultToken::transform() {
+std::unique_ptr<Ex> MultToken::transform() {
   NilEx result;
-  return std::make_shared<NilEx>(result);
+  return std::make_unique<NilEx>(result);
 }
 
-std::shared_ptr<Ex> VarToken::transform() {
+std::unique_ptr<Ex> VarToken::transform() {
   VarEx result(degree);
   return std::make_unique<VarEx>(result);
 }
 
-std::shared_ptr<Ex> NumToken::transform() {
+std::unique_ptr<Ex> NumToken::transform() {
   NumEx result(value);
   return std::make_unique<NumEx>(result);
 }
