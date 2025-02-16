@@ -5,24 +5,23 @@
 #include <string>
 
 #include "polynomial.hpp"
+#include "fraction.hpp"
 
 class Ex {
 
 public:
   virtual bool isNil() = 0;
   virtual std::unique_ptr<Polynomial> eval() = 0;
-  virtual std::string toString() = 0;
+  virtual const std::string toString() = 0;
   virtual ~Ex() {}
 };
 
 class NumEx final: public Ex {
-  const int value;
+  Fraction value;
 public:
-  NumEx(int value)
-    : value(value)
-  {}
+  NumEx(Fraction value) : value(value) {};
   std::unique_ptr<Polynomial> eval() override;
-  std::string toString() override;
+  const std::string toString() override;
   bool isNil() override;
 };
 
@@ -33,7 +32,7 @@ public:
     : degree(degree)
   {}
   std::unique_ptr<Polynomial> eval() override;
-  std::string toString() override;
+  const std::string toString() override;
   bool isNil() override;
 };
 
@@ -47,7 +46,7 @@ class NilEx final: public Ex {
 public:
   NilEx() {}
   std::unique_ptr<Polynomial> eval() override;
-  std::string toString() override;
+  const std::string toString() override;
   bool isNil() override;
 };
 
@@ -64,6 +63,6 @@ public:
   std::unique_ptr<Polynomial> evalDiv();
   void add(std::unique_ptr<Ex> ex);
   std::unique_ptr<Polynomial> eval() override;
-  std::string toString() override;
+  const std::string toString() override;
   bool isNil() override;
 };

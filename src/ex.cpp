@@ -5,22 +5,18 @@
 #include "ex.hpp"
 
 std::unique_ptr<Polynomial> HeadEx::evalPlus() {
-  Polynomial zero(16);
-  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(zero);
+  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(16);
   for (size_t i = 0; i < value.size(); i++) {
-    std::unique_ptr<Polynomial> p = value[i]->eval();
-    result = result->add(std::move(p));
+    result = result->add(value[i]->eval().get());
   }
   return result;
 }
 
 std::unique_ptr<Polynomial> HeadEx::evalMult() {
-  Polynomial one(16);
-  one.coefficients.push_back(1);
-  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(one);
+  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(16);
+  result->coefficients.push_back(std::make_unique<Fraction>(1));
   for (size_t i = 0; i < value.size(); i++) {
-    std::unique_ptr<Polynomial> p = value[i]->eval();
-    result = result->mult(std::move(p));
+    result = result->mult(value[i]->eval().get());
   }
   return result;
 }
@@ -46,18 +42,18 @@ void HeadEx::add(std::unique_ptr<Ex> ex) {
 }
 
 std::unique_ptr<Polynomial> VarEx::eval() {
-  Polynomial result(degree);
+  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(degree);
   for (size_t i = 0; i < degree; i++) {
-    result.coefficients.push_back(0);
+    result->coefficients.emplace_back(std::make_unique<Fraction>(0));
   }
-  result.coefficients.push_back(1);
-  return std::make_unique<Polynomial>(result);
+  result->coefficients.emplace_back(std::make_unique<Fraction>(1));
+  return result;
 }
 
 std::unique_ptr<Polynomial> NumEx::eval() {
-  Polynomial result(0);
-  result.coefficients.push_back(value);
-  return std::make_unique<Polynomial>(result);
+  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(0);
+  result->coefficients.emplace_back(std::make_unique<Fraction>(value.numerator, value.denominator));
+  return result;
 }
 
 std::unique_ptr<Polynomial> NilEx::eval() {
@@ -89,7 +85,7 @@ std::string symbolToString(Symbol symbol) {
   return "UNKNOWN_SYMBOL";
 }
 
-std::string HeadEx::toString() {
+const std::string HeadEx::toString() {
   if (value.empty()) {
     return "(" + symbolToString(head) + ")";
   }
@@ -103,14 +99,14 @@ std::string HeadEx::toString() {
   return "(" + symbolToString(head) + " " + sb.str() + ")";
 }
 
-std::string VarEx::toString() {
+const std::string VarEx::toString() {
   return "x^" + std::to_string(degree);
 }
 
-std::string NumEx::toString() {
-  return std::to_string(value);
+const std::string NumEx::toString() {
+  return value.toString();
 }
 
-std::string NilEx::toString() {
+const std::string NilEx::toString() {
   return "NIL";
 }

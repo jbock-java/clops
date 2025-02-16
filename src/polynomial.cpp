@@ -2,6 +2,7 @@
 #include <sstream>
 
 #include "polynomial.hpp"
+#include "fraction.cpp"
 
 std::string Polynomial::toString(char x) {
   std::stringstream sb;
@@ -9,8 +10,8 @@ std::string Polynomial::toString(char x) {
     if (i != 0) {
       sb << " + ";
     }
-    if (i == 0 || coefficients[i] != 1) {
-      sb << std::to_string(coefficients[i]);
+    if (i == 0 || !coefficients[i]->isOne()) {
+      sb << coefficients[i]->toString();
     }
     if (i != 0) {
       sb << x;
@@ -22,11 +23,13 @@ std::string Polynomial::toString(char x) {
   return sb.str();
 }
 
-int Polynomial::getCoefficient(size_t i) {
+std::unique_ptr<Fraction> Polynomial::getCoefficient(size_t i) {
   if (i >= coefficients.size()) {
-    return 0;
+    return std::make_unique<Fraction>(0);
   }
-  return coefficients[i];
+  int numerator = coefficients[i]->numerator;
+  int denominator = coefficients[i]->denominator;
+  return std::make_unique<Fraction>(numerator, denominator);
 }
 
 size_t Polynomial::getDegree() {
@@ -36,36 +39,35 @@ size_t Polynomial::getDegree() {
   return coefficients.size();
 }
 
-std::unique_ptr<Polynomial> Polynomial::add(std::unique_ptr<Polynomial> other) {
-  Polynomial result(std::max(getDegree(), other->getDegree()));
+std::unique_ptr<Polynomial> Polynomial::add(Polynomial* other) {
+  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(std::max(getDegree(), other->getDegree()));
   for (size_t i = 0; i < coefficients.size(); i++) {
-    result.coefficients.push_back(coefficients[i] + other->getCoefficient(i));
+    result->coefficients.push_back(coefficients[i]->add(other->getCoefficient(i).get()));
   }
   for (size_t i = coefficients.size(); i < other->coefficients.size(); i++) {
-    result.coefficients.push_back(other->getCoefficient(i));
+    result->coefficients.push_back(other->getCoefficient(i));
   }
-  return std::make_unique<Polynomial>(result);
+  return result;
 }
 
-std::unique_ptr<Polynomial> Polynomial::monoMult(int coefficient, size_t degree) {
-  Polynomial result(degree + getDegree());
+std::unique_ptr<Polynomial> Polynomial::monoMult(Fraction* coefficient, size_t degree) {
+  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(degree + getDegree());
   for (size_t i = 0; i < degree; i++) {
-    result.coefficients.push_back(0);
+    result->coefficients.emplace_back(std::make_unique<Fraction>(0));
   }
   for (size_t i = 0; i < getDegree(); i++) {
-    result.coefficients.push_back(coefficient * coefficients[i]);
+    Fraction* f = coefficients[i].get();
+    std::unique_ptr<Fraction> p = coefficient->mult(f);
+    result->coefficients.push_back(std::move(p));
   }
-  return std::make_unique<Polynomial>(result);
+  return result;
 }
 
-std::unique_ptr<Polynomial> Polynomial::mult(std::unique_ptr<Polynomial> other) {
-  Polynomial zero(getDegree() + other->getDegree());
-  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(zero);
+std::unique_ptr<Polynomial> Polynomial::mult(Polynomial* other) {
+  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(getDegree() + other->getDegree());
   for (size_t i = 0; i < other->coefficients.size(); i++) {
-    std::unique_ptr<Polynomial> p = monoMult(other->coefficients[i], i);
-    result = result->add(std::move(p));
+    std::unique_ptr<Polynomial> p = monoMult(other->coefficients[i].get(), i);
+    result = result->add(p.get());
   }
-//  std::cout << "polynomial.cpp mult (" << toString('x') << ") (" << other->toString('x') << ") => ";
-//  std::cout << result->toString('x') << '\n';
   return result;
 }
