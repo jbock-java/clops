@@ -6,6 +6,9 @@ default:
 release:
 	$(CXX) $(CXXFLAGS) src/main.cpp -o clops -O2 -DNDEBUG
 
+test:
+	./test.sh
+
 tags:
 	ctags --recurse=yes --exclude=.git
 

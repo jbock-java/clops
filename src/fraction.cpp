@@ -38,3 +38,7 @@ std::unique_ptr<Fraction> Fraction::mult(Fraction* f) {
 bool Fraction::isOne() {
   return numerator == denominator;
 }
+
+bool Fraction::isZero() {
+  return numerator == 0;
+}

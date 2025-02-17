@@ -6,10 +6,15 @@
 
 std::string Polynomial::toString(char x) {
   std::stringstream sb;
+  bool printed = false;
   for (size_t i = 0; i < coefficients.size(); i++) {
-    if (i != 0) {
+    if (coefficients[i]->isZero()) {
+      continue;
+    }
+    if (printed) {
       sb << " + ";
     }
+    printed = true;
     if (i == 0 || !coefficients[i]->isOne()) {
       sb << coefficients[i]->toString();
     }
