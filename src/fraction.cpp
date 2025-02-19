@@ -12,8 +12,9 @@ Fraction::Fraction(int n, int d) {
     if (d == 0) {
       throw std::runtime_error("denumerator cannot be zero");
     }
-    numerator = n / std::gcd(n, d);
-    denominator = d / std::gcd(n, d);
+    int gd = std::gcd(n, d);
+    numerator = n / gd;
+    denominator = d / gd;
 }
 
 std::string Fraction::toString() {
