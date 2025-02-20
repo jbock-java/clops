@@ -13,5 +13,5 @@ public:
     std::unique_ptr<Fraction> mult(Fraction* other);
     bool isOne();
     bool isZero();
-    std::string toString();
+    std::string toString() const;
 };

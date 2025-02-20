@@ -17,7 +17,7 @@ Fraction::Fraction(int n, int d) {
     denominator = d / gd;
 }
 
-std::string Fraction::toString() {
+std::string Fraction::toString() const {
     if (denominator == 1) {
       return std::to_string(numerator);
     }

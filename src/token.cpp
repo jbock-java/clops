@@ -24,7 +24,7 @@ std::unique_ptr<Ex> unwrap(std::unique_ptr<HeadEx> expr) {
   return expr;
 }
 
-std::unique_ptr<Ex> ListToken::transform() {
+std::unique_ptr<Ex> ListToken::transform() const {
   if (value.size() == 1) {
     return value[0]->transform();
   }
@@ -47,7 +47,7 @@ std::unique_ptr<Ex> ListToken::transform() {
     }
   }
   for (size_t i = 0; i < value.size(); i++) {
-    std::unique_ptr<Token> token = std::move(value[i]);
+    Token* token = value[i].get();
     int b = bound[i];
     if ((b & B_STRONG) != 0) {
       if ((b & B_MINUSBOUND) != 0) {
@@ -77,138 +77,138 @@ std::unique_ptr<Ex> ListToken::transform() {
   return exprsCopy;
 }
 
-std::unique_ptr<Ex> PlusToken::transform() {
+std::unique_ptr<Ex> PlusToken::transform() const {
   return std::make_unique<NilEx>();
 }
 
-std::unique_ptr<Ex> MinusToken::transform() {
+std::unique_ptr<Ex> MinusToken::transform() const {
   return std::make_unique<NilEx>();
 }
 
-std::unique_ptr<Ex> MultToken::transform() {
+std::unique_ptr<Ex> MultToken::transform() const {
   return std::make_unique<NilEx>();
 }
 
-std::unique_ptr<Ex> DivToken::transform() {
+std::unique_ptr<Ex> DivToken::transform() const {
   return std::make_unique<NilEx>();
 }
 
-std::unique_ptr<Ex> VarToken::transform() {
+std::unique_ptr<Ex> VarToken::transform() const {
   return std::make_unique<VarEx>(degree);
 }
 
-std::unique_ptr<Ex> NumToken::transform() {
+std::unique_ptr<Ex> NumToken::transform() const {
   return std::make_unique<NumEx>(value);
 }
 
-Strength ListToken::leftStrength() {
+Strength ListToken::leftStrength() const {
   return Strength::UNDECIDED;
 }
 
-Strength ListToken::rightStrength() {
+Strength ListToken::rightStrength() const {
   return Strength::UNDECIDED;
 }
 
-Strength PlusToken::leftStrength() {
+Strength PlusToken::leftStrength() const {
   return Strength::WEAK;
 }
 
-Strength PlusToken::rightStrength() {
+Strength PlusToken::rightStrength() const {
   return Strength::WEAK;
 }
 
-Strength MinusToken::leftStrength() {
+Strength MinusToken::leftStrength() const {
   return Strength::STRONG;
 }
 
-Strength MinusToken::rightStrength() {
+Strength MinusToken::rightStrength() const {
   return Strength::WEAK;
 }
 
-Strength MultToken::leftStrength() {
+Strength MultToken::leftStrength() const {
   return Strength::STRONG;
 }
 
-Strength MultToken::rightStrength() {
+Strength MultToken::rightStrength() const {
   return Strength::STRONG;
 }
 
-Strength DivToken::leftStrength() {
+Strength DivToken::leftStrength() const {
   return Strength::STRONG;
 }
 
-Strength DivToken::rightStrength() {
+Strength DivToken::rightStrength() const {
   return Strength::STRONG;
 }
 
-Strength VarToken::leftStrength() {
+Strength VarToken::leftStrength() const {
   return Strength::UNDECIDED;
 }
 
-Strength VarToken::rightStrength() {
+Strength VarToken::rightStrength() const {
   return Strength::UNDECIDED;
 }
 
-Strength NumToken::leftStrength() {
+Strength NumToken::leftStrength() const {
   return Strength::UNDECIDED;
 }
 
-Strength NumToken::rightStrength() {
+Strength NumToken::rightStrength() const {
   return Strength::UNDECIDED;
 }
 
-bool ListToken::isMinus() {
+bool ListToken::isMinus() const {
   return false;
 }
 
-bool PlusToken::isMinus() {
+bool PlusToken::isMinus() const {
   return false;
 }
 
-bool MinusToken::isMinus() {
+bool MinusToken::isMinus() const {
   return true;
 }
 
-bool MultToken::isMinus() {
+bool MultToken::isMinus() const {
   return false;
 }
 
-bool DivToken::isMinus() {
+bool DivToken::isMinus() const {
   return false;
 }
 
-bool VarToken::isMinus() {
+bool VarToken::isMinus() const {
   return false;
 }
 
-bool NumToken::isMinus() {
+bool NumToken::isMinus() const {
   return false;
 }
 
-bool VarToken::isDiv() {
+bool VarToken::isDiv() const {
   return false;
 }
 
-bool NumToken::isDiv() {
+bool NumToken::isDiv() const {
   return false;
 }
 
-bool ListToken::isDiv() {
+bool ListToken::isDiv() const {
   return false;
 }
 
-bool PlusToken::isDiv() {
+bool PlusToken::isDiv() const {
   return false;
 }
 
-bool MinusToken::isDiv() {
+bool MinusToken::isDiv() const {
   return false;
 }
 
-bool MultToken::isDiv() {
+bool MultToken::isDiv() const {
   return false;
 }
 
-bool DivToken::isDiv() {
+bool DivToken::isDiv() const {
   return true;
 }

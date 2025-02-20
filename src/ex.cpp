@@ -85,7 +85,7 @@ std::string symbolToString(Symbol symbol) {
   return "UNKNOWN_SYMBOL";
 }
 
-const std::string HeadEx::toString() {
+std::string HeadEx::toString() const {
   if (value.empty()) {
     return "(" + symbolToString(head) + ")";
   }
@@ -99,14 +99,14 @@ const std::string HeadEx::toString() {
   return "(" + symbolToString(head) + " " + sb.str() + ")";
 }
 
-const std::string VarEx::toString() {
+std::string VarEx::toString() const {
   return "x^" + std::to_string(degree);
 }
 
-const std::string NumEx::toString() {
+std::string NumEx::toString() const {
   return value.toString();
 }
 
-const std::string NilEx::toString() {
+std::string NilEx::toString() const {
   return "NIL";
 }
