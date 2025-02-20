@@ -5,7 +5,6 @@
 #include <string>
 
 #include "polynomial.hpp"
-#include "fraction.hpp"
 
 class Ex {
 

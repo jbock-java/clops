@@ -4,7 +4,6 @@
 #include <memory>
 #include <string>
 
-#include "polynomial.hpp"
 #include "ex.hpp"
 
 enum class Strength {

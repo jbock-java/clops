@@ -2,13 +2,14 @@
 
 set -e
 
-RED='\033[0;31m'
+RED='\033[1;31m'
+GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
 expect() {
   local RESULT=$(./clops <<< $2)
   if [[ "$RESULT" != "$1" ]]; then
-    printf "${RED}FAILURE${NC}\n"
+    printf "${RED}=== FAILURE ===${NC}\n"
     echo "Expecting"
     echo ">>>"
     echo "$2"
@@ -23,6 +24,8 @@ expect() {
     echo "<<<"
     return 1
   else
+    printf "${GREEN}[OK]${NC} "
+    printf "$2 -> $1\n"
     return 0
   fi
 }
