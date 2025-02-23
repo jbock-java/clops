@@ -1,6 +1,7 @@
 #include <cctype>
 #include <stdexcept>
 #include <string>
+#include <sstream>
 
 #include "parser.hpp"
 #include "token.hpp"
@@ -107,6 +108,14 @@ std::unique_ptr<ListToken> parse_internal(char x, std::istream& in) {
 }
 
 std::unique_ptr<ListToken> Parser::parse(char x, std::istream& in) {
-  consume_whitespace(in);
-  return parse_internal(x, in);
+  std::ostringstream buf;
+  while (true) {
+    char c = in.get();
+    if (c == -1) {
+      break;
+    }
+    buf << c;
+  }
+  std::stringstream ss(buf.str());
+  return parse_internal(x, ss);
 }
