@@ -9,9 +9,9 @@ public:
     int denominator;
     Fraction(int numerator);
     Fraction(int numerator, int denominator);
-    std::unique_ptr<Fraction> add(Fraction* other);
+    std::unique_ptr<Fraction> add(int n, int d) const;
     std::unique_ptr<Fraction> mult(Fraction* other);
-    bool isOne();
-    bool isZero();
+    bool isOne() const;
+    bool isZero() const;
     std::string toString() const;
 };
