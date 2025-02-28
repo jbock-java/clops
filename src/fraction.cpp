@@ -28,10 +28,10 @@ std::unique_ptr<Fraction> Fraction::add(int n, int d) const {
   return std::make_unique<Fraction>(numerator * d + denominator * n, denominator * d);
 }
 
-std::unique_ptr<Fraction> Fraction::mult(Fraction* f) {
+std::unique_ptr<Fraction> Fraction::mult(int n, int d) const {
     return std::make_unique<Fraction>(
-      numerator * f->numerator,
-      denominator * f->denominator);
+      numerator * n,
+      denominator * d);
 }
 
 bool Fraction::isOne() const {

@@ -59,11 +59,12 @@ std::unique_ptr<Polynomial> Polynomial::add(Polynomial* other) {
 std::unique_ptr<Polynomial> Polynomial::monoMult(Fraction* coefficient, size_t degree) {
   std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(degree + getDegree());
   for (size_t i = 0; i < degree; i++) {
-    result->coefficients.emplace_back(std::make_unique<Fraction>(0));
+    result->coefficients.push_back(std::make_unique<Fraction>(0));
   }
   for (size_t i = 0; i < getDegree(); i++) {
-    Fraction* c = coefficients[i].get();
-    result->coefficients.push_back(coefficient->mult(c));
+    int n = coefficients[i]->numerator;
+    int d = coefficients[i]->denominator;
+    result->coefficients.push_back(coefficient->mult(n, d));
   }
   return result;
 }

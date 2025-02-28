@@ -10,7 +10,7 @@ public:
     Fraction(int numerator);
     Fraction(int numerator, int denominator);
     std::unique_ptr<Fraction> add(int n, int d) const;
-    std::unique_ptr<Fraction> mult(Fraction* other);
+    std::unique_ptr<Fraction> mult(int n, int d) const;
     bool isOne() const;
     bool isZero() const;
     std::string toString() const;
