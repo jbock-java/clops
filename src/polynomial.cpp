@@ -32,11 +32,11 @@ size_t Polynomial::getDegree() {
   if (coefficients.empty()) {
     return 0;
   }
-  return coefficients.size();
+  return coefficients.size() - 1;
 }
 
 std::unique_ptr<Polynomial> Polynomial::add(Polynomial* other) {
-  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(std::max(getDegree(), other->getDegree()));
+  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(std::max(coefficients.size(), other->coefficients.size()));
   for (size_t i = 0; i < coefficients.size(); i++) {
     if (i >= other->coefficients.size()) {
       int n = coefficients[i]->numerator;
@@ -60,11 +60,11 @@ std::unique_ptr<Polynomial> Polynomial::add(Polynomial* other) {
 }
 
 std::unique_ptr<Polynomial> Polynomial::monoMult(Fraction* coefficient, size_t degree) {
-  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(degree + getDegree());
+  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(degree + coefficients.size());
   for (size_t i = 0; i < degree; i++) {
     result->coefficients.push_back(std::make_unique<Fraction>(0));
   }
-  for (size_t i = 0; i < getDegree(); i++) {
+  for (size_t i = 0; i < coefficients.size(); i++) {
     int n = coefficients[i]->numerator;
     int d = coefficients[i]->denominator;
     result->coefficients.push_back(coefficient->mult(n, d));
@@ -76,7 +76,7 @@ std::unique_ptr<Polynomial> Polynomial::monoMult(Fraction* coefficient, size_t d
 }
 
 std::unique_ptr<Polynomial> Polynomial::mult(Polynomial* other) {
-  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(getDegree() + other->getDegree());
+  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(coefficients.size() + other->coefficients.size());
   for (size_t i = 0; i < other->coefficients.size(); i++) {
     Fraction* c = other->coefficients[i].get();
     std::unique_ptr<Polynomial> p = monoMult(c, i);
