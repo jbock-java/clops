@@ -5,6 +5,6 @@
 
 namespace Parser {
 
-  std::unique_ptr<ListToken> parse(char x, std::istream& in);
+  std::unique_ptr<ListToken> parse(char x, std::string s);
 }
 

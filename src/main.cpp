@@ -43,7 +43,12 @@ int main(int argc, char** argv) {
         return 1;
     }
   }
-  std::unique_ptr<ListToken> result = Parser::parse(x, std::cin);
+  std::string s;
+  std::getline(std::cin, s);
+  if (s == "q") {
+    return 0;
+  }
+  std::unique_ptr<ListToken> result = Parser::parse(x, s);
 //  std::cout << "main.cpp parseResult: " << result->value.size() << '\n';
   std::unique_ptr<Ex> transformed = result->transform();
 //  std::cout << "main.cpp transformed: " << transformed->toString() << '\n';

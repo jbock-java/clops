@@ -107,15 +107,7 @@ std::unique_ptr<ListToken> parse_internal(char x, std::istream& in) {
   return result;
 }
 
-std::unique_ptr<ListToken> Parser::parse(char x, std::istream& in) {
-  std::ostringstream buf;
-  while (true) {
-    char c = in.get();
-    if (c == -1) {
-      break;
-    }
-    buf << c;
-  }
-  std::stringstream ss(buf.str());
+std::unique_ptr<ListToken> Parser::parse(char x, std::string s) {
+  std::stringstream ss(s);
   return parse_internal(x, ss);
 }
