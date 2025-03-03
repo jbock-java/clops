@@ -7,7 +7,7 @@ GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
 expect() {
-  local RESULT=$(./clops <<< $2)
+  local RESULT=$(./clops <<< "$2"$'\nq')
   if [[ "$RESULT" != "$1" ]]; then
     printf "${RED}=== FAILURE ===${NC}\n"
     echo "Expecting"

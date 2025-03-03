@@ -43,16 +43,18 @@ int main(int argc, char** argv) {
         return 1;
     }
   }
-  std::string s;
-  std::getline(std::cin, s);
-  if (s == "q") {
-    return 0;
+  std::string line;
+  while (std::getline(std::cin, line)) {
+    if (line.empty()) {
+      continue;
+    }
+    if (line == "q") {
+      break;
+    }
+    std::unique_ptr<ListToken> result = Parser::parse(x, line);
+    std::unique_ptr<Ex> transformed = result->transform();
+    std::unique_ptr<Polynomial> p = transformed->eval();
+    std::cout << p->toString(x) << '\n';
   }
-  std::unique_ptr<ListToken> result = Parser::parse(x, s);
-//  std::cout << "main.cpp parseResult: " << result->value.size() << '\n';
-  std::unique_ptr<Ex> transformed = result->transform();
-//  std::cout << "main.cpp transformed: " << transformed->toString() << '\n';
-  std::unique_ptr<Polynomial> p = transformed->eval();
-  std::cout << p->toString(x) << '\n';
   return 0;
 }
