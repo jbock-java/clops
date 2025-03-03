@@ -20,6 +20,10 @@ std::unique_ptr<Fraction> Fraction::mult(int n, int d) const {
       denominator * d);
 }
 
+std::unique_ptr<Fraction> Fraction::div(int n, int d) const {
+    return mult(d, n);
+}
+
 bool Fraction::isOne() const {
   return numerator == denominator;
 }

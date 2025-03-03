@@ -15,6 +15,7 @@ public:
     {};
     std::unique_ptr<Fraction> add(int n, int d) const;
     std::unique_ptr<Fraction> mult(int n, int d) const;
+    std::unique_ptr<Fraction> div(int n, int d) const;
     bool isOne() const;
     bool isZero() const;
     std::string toString() const;

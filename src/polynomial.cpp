@@ -53,6 +53,9 @@ std::unique_ptr<Polynomial> Polynomial::add(Polynomial* other) {
     int d = other->coefficients[i]->denominator;
     result->coefficients.push_back(std::make_unique<Fraction>(n, d));
   }
+  while (!result->coefficients.empty() && result->coefficients.back()->isZero()) {
+    result->coefficients.pop_back();
+  }
   return result;
 }
 
@@ -66,6 +69,9 @@ std::unique_ptr<Polynomial> Polynomial::monoMult(Fraction* coefficient, size_t d
     int d = coefficients[i]->denominator;
     result->coefficients.push_back(coefficient->mult(n, d));
   }
+  while (!result->coefficients.empty() && result->coefficients.back()->isZero()) {
+    result->coefficients.pop_back();
+  }
   return result;
 }
 
@@ -76,5 +82,16 @@ std::unique_ptr<Polynomial> Polynomial::mult(Polynomial* other) {
     std::unique_ptr<Polynomial> p = monoMult(c, i);
     result = result->add(p.get());
   }
+  while (!result->coefficients.empty() && result->coefficients.back()->isZero()) {
+    result->coefficients.pop_back();
+  }
   return result;
+}
+
+std::unique_ptr<Monomial> Polynomial::lead() {
+  throw std::runtime_error("lead not implemented");
+//  if (coefficients.empty()) {
+//    return std::make_unique<Monomial>(0, 0);
+//  }
+//  return std::make_unique<Monomial>(coefficients.back(), getDegree());
 }
