@@ -3,20 +3,6 @@
 
 #include "fraction.hpp"
 
-Fraction::Fraction(int n) {
-  numerator = n;
-  denominator = 1;
-}
-
-Fraction::Fraction(int n, int d) {
-  if (d == 0) {
-    throw std::runtime_error("denumerator cannot be zero");
-  }
-  int gd = std::gcd(n, d);
-  numerator = n / gd;
-  denominator = d / gd;
-}
-
 std::string Fraction::toString() const {
   if (denominator == 1) {
     return std::to_string(numerator);
