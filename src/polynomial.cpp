@@ -35,6 +35,21 @@ size_t Polynomial::getDegree() const {
   return coefficients.size() - 1;
 }
 
+void Polynomial::mutAdd(Polynomial* other) {
+  for (size_t i = 0; i < other->coefficients.size(); i++) {
+    int n = other->coefficients[i]->numerator;
+    int d = other->coefficients[i]->denominator;
+    if (i < coefficients.size()) {
+      coefficients[i] = coefficients[i]->add(n, d);
+    } else {
+      coefficients.push_back(std::make_unique<Fraction>(n, d));
+    }
+  }
+  while (!coefficients.empty() && coefficients.back()->isZero()) {
+    coefficients.pop_back();
+  }
+}
+
 std::unique_ptr<Polynomial> Polynomial::add(Polynomial* other) const {
   std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(std::max(coefficients.size(), other->coefficients.size()));
   for (size_t i = 0; i < coefficients.size(); i++) {
@@ -79,8 +94,8 @@ std::unique_ptr<Polynomial> Polynomial::mult(Polynomial* other) const {
   std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(coefficients.size() + other->coefficients.size());
   for (size_t i = 0; i < other->coefficients.size(); i++) {
     Fraction* c = other->coefficients[i].get();
-    std::unique_ptr<Polynomial> p = monoMult(c, i);
-    result = result->add(p.get()); // TODO more efficient
+    std::unique_ptr<Polynomial> p = monoMult(c, i); // todo avoid allocation?
+    result->mutAdd(p.get());
   }
   while (!result->coefficients.empty() && result->coefficients.back()->isZero()) {
     result->coefficients.pop_back();
