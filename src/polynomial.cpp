@@ -90,12 +90,23 @@ std::unique_ptr<Polynomial> Polynomial::monoMult(Fraction* coefficient, size_t d
   return result;
 }
 
+void Polynomial::mutAdd(int n, int d, size_t degree) {
+  while (coefficients.size() <= degree) {
+    coefficients.push_back(std::make_unique<Fraction>(0));
+  }
+  coefficients[degree] = coefficients[degree]->add(n, d);
+}
+
 std::unique_ptr<Polynomial> Polynomial::mult(Polynomial* other) const {
   std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(coefficients.size() + other->coefficients.size());
-  for (size_t i = 0; i < other->coefficients.size(); i++) {
-    Fraction* c = other->coefficients[i].get();
-    std::unique_ptr<Polynomial> p = monoMult(c, i); // todo avoid allocation?
-    result->mutAdd(p.get());
+  for (size_t i = 0; i < coefficients.size(); i++) {
+    for (size_t j = 0; j < other->coefficients.size(); j++) {
+      int n = coefficients[i]->numerator;
+      int d = coefficients[i]->denominator;
+      int N = other->coefficients[j]->numerator;
+      int D = other->coefficients[j]->denominator;
+      result->mutAdd(n * N, d * D, i + j);
+    }
   }
   while (!result->coefficients.empty() && result->coefficients.back()->isZero()) {
     result->coefficients.pop_back();

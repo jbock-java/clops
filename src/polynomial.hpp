@@ -20,4 +20,6 @@ public:
   Polynomial(size_t degree) {
     coefficients.reserve(degree + 1);
   }
+private:
+  void mutAdd(int n, int d, size_t degree);
 };
