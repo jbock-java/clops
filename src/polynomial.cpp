@@ -4,7 +4,7 @@
 #include "polynomial.hpp"
 #include "fraction.cpp"
 
-std::string Polynomial::toString(char x) {
+std::string Polynomial::toString(char x) const {
   std::stringstream sb;
   bool printed = false;
   for (size_t i = 0; i < coefficients.size(); i++) {
@@ -28,14 +28,14 @@ std::string Polynomial::toString(char x) {
   return sb.str();
 }
 
-size_t Polynomial::getDegree() {
+size_t Polynomial::getDegree() const {
   if (coefficients.empty()) {
     return 0;
   }
   return coefficients.size() - 1;
 }
 
-std::unique_ptr<Polynomial> Polynomial::add(Polynomial* other) {
+std::unique_ptr<Polynomial> Polynomial::add(Polynomial* other) const {
   std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(std::max(coefficients.size(), other->coefficients.size()));
   for (size_t i = 0; i < coefficients.size(); i++) {
     if (i >= other->coefficients.size()) {
@@ -59,7 +59,7 @@ std::unique_ptr<Polynomial> Polynomial::add(Polynomial* other) {
   return result;
 }
 
-std::unique_ptr<Polynomial> Polynomial::monoMult(Fraction* coefficient, size_t degree) {
+std::unique_ptr<Polynomial> Polynomial::monoMult(Fraction* coefficient, size_t degree) const {
   std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(degree + coefficients.size());
   for (size_t i = 0; i < degree; i++) {
     result->coefficients.push_back(std::make_unique<Fraction>(0));
@@ -75,7 +75,7 @@ std::unique_ptr<Polynomial> Polynomial::monoMult(Fraction* coefficient, size_t d
   return result;
 }
 
-std::unique_ptr<Polynomial> Polynomial::mult(Polynomial* other) {
+std::unique_ptr<Polynomial> Polynomial::mult(Polynomial* other) const {
   std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(coefficients.size() + other->coefficients.size());
   for (size_t i = 0; i < other->coefficients.size(); i++) {
     Fraction* c = other->coefficients[i].get();
@@ -88,7 +88,7 @@ std::unique_ptr<Polynomial> Polynomial::mult(Polynomial* other) {
   return result;
 }
 
-std::unique_ptr<Monomial> Polynomial::lead() {
+std::unique_ptr<Monomial> Polynomial::lead() const {
   throw std::runtime_error("lead not implemented");
 //  if (coefficients.empty()) {
 //    return std::make_unique<Monomial>(0, 0);
