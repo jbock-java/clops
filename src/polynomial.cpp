@@ -80,7 +80,7 @@ std::unique_ptr<Polynomial> Polynomial::mult(Polynomial* other) const {
   for (size_t i = 0; i < other->coefficients.size(); i++) {
     Fraction* c = other->coefficients[i].get();
     std::unique_ptr<Polynomial> p = monoMult(c, i);
-    result = result->add(p.get());
+    result = result->add(p.get()); // TODO more efficient
   }
   while (!result->coefficients.empty() && result->coefficients.back()->isZero()) {
     result->coefficients.pop_back();
