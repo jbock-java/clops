@@ -90,22 +90,18 @@ std::unique_ptr<Polynomial> Polynomial::monoMult(Fraction* coefficient, size_t d
   return result;
 }
 
-void Polynomial::mutAdd(int n, int d, size_t degree) {
-  while (coefficients.size() <= degree) {
-    coefficients.push_back(std::make_unique<Fraction>(0));
-  }
-  coefficients[degree] = coefficients[degree]->add(n, d);
-}
-
 std::unique_ptr<Polynomial> Polynomial::mult(Polynomial* other) const {
-  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(coefficients.size() + other->coefficients.size());
+  std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(getDegree() + other->getDegree() + 1);
+  for (size_t i = 0; i <= getDegree() + other->getDegree(); i++) {
+    result->coefficients.push_back(std::make_unique<Fraction>(0));
+  }
   for (size_t i = 0; i < coefficients.size(); i++) {
     for (size_t j = 0; j < other->coefficients.size(); j++) {
       int n = coefficients[i]->numerator;
       int d = coefficients[i]->denominator;
       int N = other->coefficients[j]->numerator;
       int D = other->coefficients[j]->denominator;
-      result->mutAdd(n * N, d * D, i + j);
+      result->coefficients[i + j] = result->coefficients[i + j]->add(n * N, d * D);
     }
   }
   while (!result->coefficients.empty() && result->coefficients.back()->isZero()) {
