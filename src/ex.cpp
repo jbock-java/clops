@@ -7,7 +7,7 @@
 std::unique_ptr<Polynomial> HeadEx::evalPlus() {
   std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(16);
   for (size_t i = 0; i < value.size(); i++) {
-    result = result->add(value[i]->eval().get()); // TODO more efficient
+    result->mutAdd(value[i]->eval().get());
   }
   return result;
 }
