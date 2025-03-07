@@ -13,8 +13,13 @@ public:
   std::string toString(char x) const;
   size_t getDegree() const;
   void mutAdd(Polynomial* other);
+  void shrink();
   std::unique_ptr<Polynomial> add(Polynomial* other) const;
-  std::unique_ptr<Polynomial> monoMult(Fraction* coefficient, size_t degree) const;
+  void add(size_t i, int n, int d);
+  void set(size_t i, int n, int d);
+  int getNumerator(size_t i) const;
+  int getDenominator(size_t i) const;
+  size_t size() const;
   std::unique_ptr<Polynomial> mult(Polynomial* other) const;
   std::unique_ptr<Monomial> lead() const;
   Polynomial(size_t degree) {
