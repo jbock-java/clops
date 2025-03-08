@@ -36,34 +36,28 @@ size_t Polynomial::getDegree() const {
 }
 
 void Polynomial::mutAdd(Polynomial* other) {
-  for (size_t i = 0; i < other->coefficients.size(); i++) {
-    int n = other->coefficients[i]->numerator;
-    int d = other->coefficients[i]->denominator;
-    if (i < coefficients.size()) {
-      coefficients[i] = coefficients[i]->add(n, d);
-    } else {
-      coefficients.push_back(std::make_unique<Fraction>(n, d));
-    }
+  for (size_t i = 0; i < other->size(); i++) {
+    int n = other->getNumerator(i);
+    int d = other->getDenominator(i);
+    add(i, n, d);
   }
-  while (!coefficients.empty() && coefficients.back()->isZero()) {
-    coefficients.pop_back();
-  }
+  shrink();
 }
 
-void Polynomial::add(size_t i, int n, int d) {
+void Polynomial::add(size_t i, int numerator, int denominator) {
   int diff = i - size() + 1;
   for (int j = 0; j < diff; j++) {
     coefficients.push_back(std::make_unique<Fraction>(0));
   }
-  coefficients[i] = coefficients[i]->add(n, d);
+  coefficients[i] = coefficients[i]->add(numerator, denominator);
 }
 
-void Polynomial::set(size_t i, int n, int d) {
+void Polynomial::set(size_t i, int numerator, int denominator) {
   int diff = i - size() + 1;
   for (int j = 0; j < diff; j++) {
     coefficients.push_back(std::make_unique<Fraction>(0));
   }
-  coefficients[i] = std::make_unique<Fraction>(n, d);
+  coefficients[i] = std::make_unique<Fraction>(numerator, denominator);
 }
 
 int Polynomial::getNumerator(size_t i) const {

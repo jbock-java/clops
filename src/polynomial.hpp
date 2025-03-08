@@ -15,8 +15,8 @@ public:
   void mutAdd(Polynomial* other);
   void shrink();
   std::unique_ptr<Polynomial> add(Polynomial* other) const;
-  void add(size_t i, int n, int d);
-  void set(size_t i, int n, int d);
+  void add(size_t i, int numerator, int denominator);
+  void set(size_t i, int numerator, int denominator);
   int getNumerator(size_t i) const;
   int getDenominator(size_t i) const;
   size_t size() const;
