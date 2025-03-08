@@ -14,7 +14,7 @@ std::unique_ptr<Polynomial> HeadEx::evalPlus() {
 
 std::unique_ptr<Polynomial> HeadEx::evalMult() {
   std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(16);
-  result->coefficients.push_back(std::make_unique<Fraction>(1));
+  result->set(0, 1, 1);
   for (size_t i = 0; i < value.size(); i++) {
     result = result->mult(value[i]->eval().get()); // TODO more efficient
   }
@@ -43,16 +43,13 @@ void HeadEx::add(std::unique_ptr<Ex> ex) {
 
 std::unique_ptr<Polynomial> VarEx::eval() {
   std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(degree);
-  for (size_t i = 0; i < degree; i++) {
-    result->coefficients.emplace_back(std::make_unique<Fraction>(0));
-  }
-  result->coefficients.emplace_back(std::make_unique<Fraction>(1));
+  result->set(degree, 1, 1);
   return result;
 }
 
 std::unique_ptr<Polynomial> NumEx::eval() {
   std::unique_ptr<Polynomial> result = std::make_unique<Polynomial>(0);
-  result->coefficients.emplace_back(std::make_unique<Fraction>(value.numerator, value.denominator));
+  result->set(0, value.numerator, value.denominator);
   return result;
 }
 

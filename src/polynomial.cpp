@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <numeric>
 
 #include "polynomial.hpp"
 #include "fraction.cpp"
@@ -7,22 +8,30 @@
 std::string Polynomial::toString(char x) const {
   std::stringstream sb;
   bool printed = false;
-  for (size_t i = 0; i < coefficients.size(); i++) {
-    if (coefficients[i]->isZero()) {
+  for (size_t i = 0; i < coefficients.size(); i += 2) {
+    int numerator = coefficients[i];
+    int denominator = coefficients[i + 1];
+    bool isZero = numerator == 0;
+    bool isOne = numerator == denominator;
+    if (isZero) {
       continue;
     }
     if (printed) {
       sb << " + ";
     }
     printed = true;
-    if (i == 0 || !coefficients[i]->isOne()) {
-      sb << coefficients[i]->toString();
+    if (i == 0 || !isOne) {
+      if (denominator == 1) {
+        sb << std::to_string(numerator);
+      } else {
+        sb << std::to_string(numerator) + "/" + std::to_string(denominator);
+      }
     }
     if (i != 0) {
       sb << x;
     }
-    if (i != 0 && i != 1) {
-      sb << '^' << std::to_string(i);
+    if (i != 0 && i != 2) {
+      sb << '^' << std::to_string(i / 2);
     }
   }
   return sb.str();
@@ -32,7 +41,7 @@ size_t Polynomial::getDegree() const {
   if (coefficients.empty()) {
     return 0;
   }
-  return coefficients.size() - 1;
+  return (coefficients.size() / 2) - 1;
 }
 
 void Polynomial::mutAdd(Polynomial* other) {
@@ -47,28 +56,39 @@ void Polynomial::mutAdd(Polynomial* other) {
 void Polynomial::add(size_t i, int numerator, int denominator) {
   int diff = i - size() + 1;
   for (int j = 0; j < diff; j++) {
-    coefficients.push_back(std::make_unique<Fraction>(0));
+    coefficients.push_back(0);
+    coefficients.push_back(1);
   }
-  coefficients[i] = coefficients[i]->add(numerator, denominator);
+  int n = coefficients[2 * i];
+  int d = coefficients[2 * i + 1];
+  int n2 = numerator * d + denominator * n;
+  int d2 = denominator * d;
+  int divisor = std::gcd(n2, d2);
+  coefficients[2 * i] = n2 / divisor;
+  coefficients[2 * i + 1] = d2 / divisor;
 }
 
 void Polynomial::set(size_t i, int numerator, int denominator) {
   int diff = i - size() + 1;
   for (int j = 0; j < diff; j++) {
-    coefficients.push_back(std::make_unique<Fraction>(0));
+    coefficients.push_back(0);
+    coefficients.push_back(1);
   }
-  coefficients[i] = std::make_unique<Fraction>(numerator, denominator);
+  int divisor = std::gcd(numerator, denominator);
+  coefficients[2 * i] = numerator / divisor;
+  coefficients[2 * i + 1] = denominator / divisor;
 }
 
 int Polynomial::getNumerator(size_t i) const {
-  return coefficients[i]->numerator;
+  return coefficients[2 * i];
 }
 
 int Polynomial::getDenominator(size_t i) const {
-  return coefficients[i]->denominator;
+  return coefficients[2 * i + 1];
 }
+
 size_t Polynomial::size() const {
-  return coefficients.size();
+  return coefficients.size() / 2;
 }
 
 std::unique_ptr<Polynomial> Polynomial::add(Polynomial* other) const {
@@ -117,7 +137,8 @@ std::unique_ptr<Monomial> Polynomial::lead() const {
 }
 
 void Polynomial::shrink() {
-  while (!coefficients.empty() && coefficients.back()->isZero()) {
+  while (!coefficients.empty() && coefficients[coefficients.size() - 2] == 0) {
+    coefficients.pop_back();
     coefficients.pop_back();
   }
 }

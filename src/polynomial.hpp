@@ -9,7 +9,7 @@
 
 class Polynomial {
 public:
-  std::vector<std::unique_ptr<Fraction>> coefficients;
+  std::vector<int> coefficients;
   std::string toString(char x) const;
   size_t getDegree() const;
   void mutAdd(Polynomial* other);
@@ -23,6 +23,6 @@ public:
   std::unique_ptr<Polynomial> mult(Polynomial* other) const;
   std::unique_ptr<Monomial> lead() const;
   Polynomial(size_t degree) {
-    coefficients.reserve(degree + 1);
+    coefficients.reserve(2 * (degree + 1));
   }
 };
