@@ -41,10 +41,11 @@ size_t Polynomial::getDegree() const {
   if (coefficients.empty()) {
     return 0;
   }
-  return (coefficients.size() / 2) - 1;
+  return (coefficients.size() >> 1) - 1;
 }
 
 void Polynomial::mutAdd(Polynomial* other) {
+  coefficients.reserve(2 * (other->getDegree() + 1));
   for (size_t i = 0; i < other->size(); i++) {
     int n = other->getNumerator(i);
     int d = other->getDenominator(i);
