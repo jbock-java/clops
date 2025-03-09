@@ -8,9 +8,9 @@
 std::string Polynomial::toString(char x) const {
   std::stringstream sb;
   bool printed = false;
-  for (size_t i = 0; i < coefficients.size(); i += 2) {
-    int numerator = coefficients[i];
-    int denominator = coefficients[i + 1];
+  for (size_t i = 0; i < size(); i++) {
+    int numerator = coefficients[2 * i];
+    int denominator = coefficients[2 * i + 1];
     bool isZero = numerator == 0;
     bool isOne = numerator == denominator;
     if (isZero) {
@@ -30,8 +30,8 @@ std::string Polynomial::toString(char x) const {
     if (i != 0) {
       sb << x;
     }
-    if (i != 0 && i != 2) {
-      sb << '^' << std::to_string(i / 2);
+    if (i != 0 && i != 1) {
+      sb << '^' << std::to_string(i);
     }
   }
   return sb.str();
